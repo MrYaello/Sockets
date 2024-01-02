@@ -6,6 +6,7 @@ import DocumentData from './assets/Icons/DocumentData';
 import LightBulbPerson from './assets/Icons/LightbulbPerson';
 import Rocket from './assets/Icons/Rocket';
 import Logo from './assets/Icons/Logo';
+import socket from "./assets/socket.js";
 
 export default function App() {
   return (
@@ -15,11 +16,15 @@ export default function App() {
   );
 }
 
+const prueba = () => {
+  socket.emit("prueba", "pene");
+};
+
 const Home = () => {
   return <Container />;
 };
 
-const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
+const FeatureCard = ({ iconSvg: IconSvg, name, desc }) => {
   return (
     <Box
       flexDirection="column"

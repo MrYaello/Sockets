@@ -23,15 +23,19 @@ app.get('/api', (req, res) => {
   });
 });
 
-io.on('connection', (socket) => {
+server.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
+});
+
+io.on("connection", (socket) => {
   console.log(`[+]: ${socket.id} user connected.`);
 
-  socket.on('disconnect', () => {
+  socket.on("prueba", (text) => {
+    console.log(text);
+  })
+
+  socket.on("disconnect", () => {
     socket.disconnect();
     console.log("[-]: A user disconnected.")
   })
 })
-
-server.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
