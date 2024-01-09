@@ -4,7 +4,7 @@ import Login from "./screens/Login"
 import Messaging from "./screens/Messaging"
 import Chat from "./screens/Chat"
 
-import { config } from '@gluestack-ui/config';
+import { config } from './config/gluestack-ui.config';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -18,6 +18,7 @@ export default function App() {
     <GluestackUIProvider config={config}>
       <NavigationContainer>
         <Stack.Navigator>
+          {/*}
           <Stack.Screen
             name='Login'
             component={Login}
@@ -25,7 +26,7 @@ export default function App() {
               headerShown: false
             }}
           />
-          {/* 
+           */}
           <Stack.Screen
             name='Chat'
             component={Chat}
@@ -34,7 +35,7 @@ export default function App() {
               headerShown: false
             }}
           />
-
+          {/*
           <Stack.Screen
             name='Messaging'
             component={Messaging}

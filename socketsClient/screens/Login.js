@@ -6,8 +6,6 @@ import {
   FormControlLabelText, 
   InputField, 
   Input, 
-  FormControlHelper, 
-  FormControlHelperText, 
   FormControlError, 
   FormControlErrorText, 
   FormControlErrorIcon, 
@@ -72,9 +70,6 @@ const Login = ({ navigation }) => {
               }}  
             />
           </Input>
-          <FormControlHelper>
-            <FormControlHelperText>Must be at least 8 characters.</FormControlHelperText>
-          </FormControlHelper>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
             <FormControlErrorText>At least 8 characters requiered.</FormControlErrorText>
