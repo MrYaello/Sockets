@@ -8,13 +8,13 @@ const server = http.Server(app);
 const io = new Server(server);
 const PORT = 4000;
 
+let chatRooms = []
+
 app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 
-app.get('/api', (req, res) => {
-  res.json({
-    message: "Test",
-  });
+app.get('/', (req, res) => {
+  res.json(chatRooms);
 });
 
 io.on("connection", (socket) => {
@@ -31,5 +31,5 @@ io.on("connection", (socket) => {
 })
 
 server.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
+  console.log(`Server listening on http://localhost:${PORT}`);
 });
