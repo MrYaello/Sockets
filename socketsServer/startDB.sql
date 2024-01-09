@@ -6,7 +6,7 @@ CREATE TABLE users (
   username varchar(50) DEFAULT NULL,
   password TEXT DEFAULT NULL,
   email varchar(255) DEFAULT NULL,
-  phonenumber varchar(10) DEFAULT NULL,
+  phonenumber varchar(15) DEFAULT NULL,
   avatar varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
