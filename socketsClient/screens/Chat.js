@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Pressable, SafeAreaView } from "react-native";
 import styles from "../assets/utils/styles.js";
-import  Modal  from "../component/Modal";
+import Modal from "../component/Modal";
 import { 
   Box,
   VStack,
@@ -14,8 +14,8 @@ import {
   FabIcon,
   EditIcon, 
   Divider,
-  AvatarFallbackText,
-  Button} from "@gluestack-ui/themed";
+  AvatarFallbackText
+} from "@gluestack-ui/themed";
 
 const Chat = ({ navigation }) => {
 
@@ -25,7 +25,7 @@ const Chat = ({ navigation }) => {
     {
       index : 0,
       name: "Yael Lozano",
-      msg: "Prr Prr Prr... Martillazo en el ano",
+      msg: "Trr Trr Trr... Martillazo en el ano",
     },
     {
       index : 1,
@@ -48,7 +48,8 @@ const Chat = ({ navigation }) => {
         $base-minWidth="100%"
         $base-minHeight="15%"
         >
-        { data.length > 0 ?(
+        {(data.length > 0) 
+        ? (
           <VStack space="md">
             {data.map((chatData) => {
               return (
@@ -64,9 +65,10 @@ const Chat = ({ navigation }) => {
               )
             })}
           </VStack>
-          ) : ( 
-            <Text>Empty chat, click the icon to create a Chat Room!</Text>
-            )}
+          ) 
+          : ( 
+            <Text>Click the icon to start a new Chat!</Text>
+          )}
         <Fab 
           bg="$primary600" size="lg" 
           onPress={() => {setVisible(true)}}
