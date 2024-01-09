@@ -4,7 +4,7 @@ USE sockets;
 CREATE TABLE users (
   id int NOT NULL AUTO_INCREMENT,
   username varchar(50) DEFAULT NULL,
-  password varchar(50) DEFAULT NULL,
+  password varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
