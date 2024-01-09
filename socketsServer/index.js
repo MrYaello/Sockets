@@ -6,11 +6,12 @@ import mysql from 'mysql';
 
 //SQL Connection.
 const sql = mysql.createConnection({
-  host: "ylcode.online",
+  host: "localhost",
   user: "pendejos",
-  password: "penelopePene6",
+  password: "losVergudos",
   database: "sockets"
 });
+
 
 sql.connect((err) => {
   if (err) throw err;
