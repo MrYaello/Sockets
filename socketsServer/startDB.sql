@@ -4,7 +4,10 @@ USE sockets;
 CREATE TABLE users (
   id int NOT NULL AUTO_INCREMENT,
   username varchar(50) DEFAULT NULL,
-  password varchar(255) DEFAULT NULL,
+  password TEXT DEFAULT NULL,
+  email varchar(255) DEFAULT NULL,
+  phonenumber varchar(10) DEFAULT NULL,
+  avatar varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
