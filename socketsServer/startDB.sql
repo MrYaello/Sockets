@@ -12,7 +12,7 @@ CREATE TABLE messages (
   id int NOT NULL AUTO_INCREMENT,
   sender int NOT NULL,
   recipient int NOT NULL,
-  content varchar(65535) DEFAULT NULL,
+  content varchar(16383) DEFAULT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(sender) REFERENCES tableName(users),
   FOREIGN KEY(recipient) REFERENCES tableName(users)
