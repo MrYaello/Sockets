@@ -8,13 +8,15 @@ import mysql from 'mysql';
 const sql = mysql.createConnection({
   host: "ylcode.online",
   user: "pendejos",
-  password: "penelopePene6"
+  password: "penelopePene6",
+  database: "sockets"
 });
 
 sql.connect((err) => {
   if (err) throw err;
   console.log("[Server] Connected to SQL.")
 })
+
 const app = express();
 const server = http.Server(app);
 const io = new Server(server);
