@@ -14,6 +14,6 @@ CREATE TABLE messages (
   recipient int NOT NULL,
   content varchar(16383) DEFAULT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY(sender) REFERENCES tableName(users),
-  FOREIGN KEY(recipient) REFERENCES tableName(users)
+  FOREIGN KEY(sender) REFERENCES users(id),
+  FOREIGN KEY(recipient) REFERENCES users(id)
 )
