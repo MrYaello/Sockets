@@ -12,6 +12,7 @@ CREATE TABLE messages (
   id int NOT NULL AUTO_INCREMENT,
   sender int NOT NULL,
   recipient int NOT NULL,
+  postDate DATETIME NOT NULL,
   content TEXT(65535) DEFAULT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(sender) REFERENCES users(id),
