@@ -25,6 +25,7 @@ const Login = ({ navigation }) => {
   const handleSignIn = () => {
     if (username.trim().length >= 8) {
       console.log(username);
+      navigation.navigate("Chat");
     } else {
       setInvalid(true);
     }

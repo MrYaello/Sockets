@@ -18,7 +18,7 @@ export default function App() {
     <GluestackUIProvider config={config}>
       <NavigationContainer>
         <Stack.Navigator>
-          {/*}
+          
           <Stack.Screen
             name='Login'
             component={Login}
@@ -26,7 +26,7 @@ export default function App() {
               headerShown: false
             }}
           />
-           */}
+          
           <Stack.Screen
             name='Chat'
             component={Chat}
