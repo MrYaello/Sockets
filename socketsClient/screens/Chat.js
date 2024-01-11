@@ -14,7 +14,8 @@ import {
   FabIcon,
   EditIcon, 
   Divider,
-  AvatarFallbackText
+  AvatarFallbackText,
+  ScrollView
 } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket.js";
 
@@ -29,58 +30,39 @@ const Chat = ({ navigation }) => {
     socket.on("requestUsers", (response) => setData(response));
   })
 
-  /*
-  const data = [
-    {
-      index : 0,
-      name: "Yael Lozano",
-      msg: "Trr Trr Trr... Martillazo en el ano",
-    },
-    {
-      index : 1,
-      name: "Luke Morales",
-      msg: "🤓👆yo",
-    },
-    {
-      index : 2,
-      name: "Cesar Villegas",
-      msg: "Sexooooooo!",
-    },
-  ]
-  */
-
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Heading mt="$7">Chats</Heading>
-      <Divider style={{elevation: 2}}/>
+      <Heading mt="7%">Chats</Heading>
       <Box
-        p="$3"
+        pl="$3"
         $base-minWidth="100%"
-        $base-minHeight="15%"
+        $base-minHeight="93%"
         >
         {(data.length > 0) 
         ? (
-          <VStack space="md">
-            {data.map((chatData) => {
-              let source = {
-                ["uri"]: chatData.avatar,
-              }
-              console.log(source);
-              return (
-                <HStack space="sm" alignItems="center" key={chatData.index}>
-                  <Avatar size="sm">
-                    <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
-                    <AvatarImage alt="User Avatar" source={source}
-                    />
-                  </Avatar>
-                  <VStack>
-                    <Heading size="xs">{chatData.username}</Heading>
-                    <Text size="xs">{chatData.state}</Text>
-                  </VStack>
-                </HStack>
-              )
-            })}
-          </VStack>
+          <ScrollView height={100}>
+            <VStack space="lg">
+              {data.map((chatData) => {
+                let source = {
+                  ["uri"]: chatData.avatar,
+                }
+                let alt = chatData.username + " Avatar"
+                return (
+                  <HStack space="sm" alignItems="center" key={chatData.index}>
+                    <Avatar size="md">
+                      <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
+                      <AvatarImage alt={alt} source={source}
+                      />
+                    </Avatar>
+                    <VStack>
+                      <Heading>{chatData.username}</Heading>
+                      <Text>{chatData.state}</Text>
+                    </VStack>
+                  </HStack>
+                )
+              })}
+            </VStack>
+          </ScrollView>
           ) 
           : ( 
             <Text>Click the icon to start a new Chat!</Text>

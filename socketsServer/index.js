@@ -20,7 +20,9 @@ sql.connect((err) => {
 
 const app = express();
 const server = http.Server(app);
-const io = new Server(server);
+const io = new Server(server, {
+  maxHttpBufferSize: 1e7
+});
 const PORT = 4000;
 
 let chatRooms = []
