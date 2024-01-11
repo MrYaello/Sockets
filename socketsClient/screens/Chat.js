@@ -19,9 +19,13 @@ import {
 import socket from "../assets/utils/socket.js";
 
 const Chat = ({ navigation }) => {
-
   const [visible, setVisible] = useState(false);
-  let data = socket.emit("requestUsers", false);
+  const [data, setData] = useState([]);
+  socket.emit("requestUsers", false);
+  socket.on("requestUsers", (response) => {
+    console.log(response);
+    setData(response);
+  });
 
   /*
   const data = [
@@ -59,11 +63,11 @@ const Chat = ({ navigation }) => {
               return (
                 <HStack space="sm" alignItems="center" key={chatData.index}>
                   <Avatar size="sm">
-                    <AvatarFallbackText>{chatData.name}</AvatarFallbackText>
+                    <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
                   </Avatar>
                   <VStack>
-                    <Heading size="xs">{chatData.name}</Heading>
-                    <Text size="xs">{chatData.msg}</Text>
+                    <Heading size="xs">{chatData.username}</Heading>
+                    <Text size="xs">{chatData.state}</Text>
                   </VStack>
                 </HStack>
               )

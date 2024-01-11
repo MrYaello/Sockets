@@ -10,7 +10,7 @@ CREATE TABLE user (
   avatar varchar(255) DEFAULT NULL,
   state varchar(50) DEFAULT NULL,
   isOnline BOOLEAN DEFAULT FALSE,
-  PRIMARY KEY (id)
+  PRIMARY KEY (user_id)
 );
 
 CREATE TABLE message (
@@ -19,7 +19,7 @@ CREATE TABLE message (
   recipient_id int NOT NULL, -- Se deberia eliminar para crear otra tabla con los mensajes para habilitar grupos.
   postDate DATETIME NOT NULL,
   content TEXT DEFAULT NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (message_id),
   FOREIGN KEY (sender_id) REFERENCES users(user_id),
   FOREIGN KEY (recipient_id) REFERENCES users(user_id)
 );
