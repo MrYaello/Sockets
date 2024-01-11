@@ -43,7 +43,6 @@ io.on("connection", (socket) => {
     } else {
       sql.query("SELECT user_id AS \"index\", username, avatar, state FROM user", (err, result) => {
         if (err) throw err;
-        console.log(result);
         socket.emit("requestUsers", result);
       })
     }
