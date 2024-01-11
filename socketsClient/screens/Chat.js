@@ -16,11 +16,14 @@ import {
   Divider,
   AvatarFallbackText
 } from "@gluestack-ui/themed";
+import socket from "../assets/utils/socket.js";
 
 const Chat = ({ navigation }) => {
 
   const [visible, setVisible] = useState(false);
+  let data = socket.emit("requestUsers", false);
 
+  /*
   const data = [
     {
       index : 0,
@@ -38,6 +41,7 @@ const Chat = ({ navigation }) => {
       msg: "Sexooooooo!",
     },
   ]
+  */
 
   return (
     <SafeAreaView style={styles.safeArea}>

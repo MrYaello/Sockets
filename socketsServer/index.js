@@ -35,8 +35,15 @@ app.get('/', (req, res) => {
 io.on("connection", (socket) => {
   console.log(`[+]: ${socket.id} user connected.`);
 
-  socket.on("prueba", (text) => {
-    console.log(text);
+  socket.on("requestUsers", (online) => {
+    if (online) {
+
+    } else {
+      sql.query("SELECT username, avatar FROM users", (err, result) => {
+        if (err) throw err;
+        console.log(result);
+      })
+    }
   })
 
   socket.on("disconnect", () => {

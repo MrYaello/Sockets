@@ -13,7 +13,7 @@ export default ({setVisible}) => (
     <ModalBackdrop />
     <ModalContent>
       <ModalHeader>
-        <Heading size="lg">Enter your Group Name</Heading>
+        <Heading size="lg">Create Group Chat</Heading>
         <ModalCloseButton>
           <Icon as={CloseIcon} />
         </ModalCloseButton>
@@ -23,14 +23,13 @@ export default ({setVisible}) => (
         variant="outline"
         size="md"
         >
-        <InputField placeholder="Enter Text here"/>
+        <InputField placeholder="Type Group Chat Name"/>
       </Input>
       </ModalBody>
       <ModalFooter>
         <Button
           variant="outline"
           size="sm"
-          action="secondary"
           mr="$5"
           onPress={() => {
             setVisible(false)
@@ -40,7 +39,6 @@ export default ({setVisible}) => (
         </Button>
         <Button
           size="sm"
-          action="positive"
           borderWidth="$0"
           onPress={() => {
             setVisible(false)
