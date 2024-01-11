@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
     } else {
       sql.query("SELECT username, avatar FROM users", (err, result) => {
         if (err) throw err;
-        console.log(result);
+        socket.emit("requestUsers", result);
       })
     }
   })
