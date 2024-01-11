@@ -7,7 +7,7 @@ CREATE TABLE user (
   password TEXT DEFAULT NULL,
   email varchar(255) DEFAULT NULL,
   phonenumber varchar(15) DEFAULT NULL,
-  avatar varchar(255) DEFAULT NULL,
+  avatar varchar(255) DEFAULT "UNSET",
   state varchar(50) DEFAULT NULL,
   isOnline BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (user_id)

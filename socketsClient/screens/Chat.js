@@ -21,10 +21,13 @@ import socket from "../assets/utils/socket.js";
 const Chat = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
-  socket.emit("requestUsers", false);
-  socket.on("requestUsers", (response) => {
-    setData(response);
-  });
+  useLayoutEffect(() => {
+    socket.emit("requestUsers", false);
+    socket.on("requestUsers", (response) => setData(response));
+  }, []);
+  useEffect(() => {
+    socket.on("requestUsers", (response) => setData(response));
+  })
 
   /*
   const data = [
@@ -59,10 +62,16 @@ const Chat = ({ navigation }) => {
         ? (
           <VStack space="md">
             {data.map((chatData) => {
+              let source = {
+                ["uri"]: chatData.avatar,
+              }
+              console.log(source);
               return (
                 <HStack space="sm" alignItems="center" key={chatData.index}>
                   <Avatar size="sm">
                     <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
+                    <AvatarImage alt="User Avatar" source={source}
+                    />
                   </Avatar>
                   <VStack>
                     <Heading size="xs">{chatData.username}</Heading>
