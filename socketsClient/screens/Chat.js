@@ -23,7 +23,6 @@ const Chat = ({ navigation }) => {
   const [data, setData] = useState([]);
   socket.emit("requestUsers", false);
   socket.on("requestUsers", (response) => {
-    console.log(response);
     setData(response);
   });
 

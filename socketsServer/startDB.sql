@@ -20,7 +20,7 @@ CREATE TABLE message (
   postDate DATETIME NOT NULL,
   content TEXT DEFAULT NULL,
   PRIMARY KEY (message_id),
-  FOREIGN KEY (sender_id) REFERENCES users(user_id),
-  FOREIGN KEY (recipient_id) REFERENCES users(user_id)
+  FOREIGN KEY (sender_id) REFERENCES user(user_id),
+  FOREIGN KEY (recipient_id) REFERENCES user(user_id)
 );
 
