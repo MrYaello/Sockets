@@ -13,23 +13,33 @@ import {
   ArrowRightIcon, 
   ButtonText,
   Button,
-  ButtonIcon } from "@gluestack-ui/themed";
+  ButtonIcon, 
+  LockIcon} from "@gluestack-ui/themed";
 import { SafeAreaView, Text } from "react-native";
+import socket from "../assets/utils/socket.js";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Temporal, estaría bien migrar a SQLite
+
+const storeUsername = async () => {
+  try {
+    await AsyncStorage.setItem("username", username);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const handleSignIn = () => {
+  if (!username) setMessageUsername("Obligaroy field.");
+  else {
+
+  }
+  if (!password) setMessagePassword("Obligaroy field.");
+}
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState("");
-  const [isInvalid, setInvalid] = useState(false);
-  var invalid;
-  //const [password, setPassword] = useState("");
-
-  const handleSignIn = () => {
-    if (username.trim().length >= 8) {
-      console.log(username);
-      navigation.navigate("Chat");
-    } else {
-      setInvalid(true);
-    }
-  }
+  const [password, setPassword] = useState("");
+  const [messagePassword, setMessagePassword] = useState("");
+  const [messageUsername, setMessageUsername] = useState("");
 
   return (
     <SafeAreaView style={{
@@ -52,7 +62,7 @@ const Login = ({ navigation }) => {
         <FormControl
           size="lg"
           isDisabled={false}
-          isInvalid={isInvalid}
+          isInvalid={messageUsername}
           isReadOnly={false}
           isRequiered={true}
         >
@@ -64,16 +74,45 @@ const Login = ({ navigation }) => {
               autoCorrect={false} 
               type="text" 
               defaultValue="" 
-              placeholder="Enter your username."
+              placeholder="Username, Email or Phone number"
               onChangeText={(value) => {
                 setUsername(value);
-                setInvalid(false);
+                setMessageUsername("");
               }}  
             />
           </Input>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
-            <FormControlErrorText>At least 8 characters requiered.</FormControlErrorText>
+            <FormControlErrorText>{messageUsername}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
+
+        <FormControl
+          size="lg"
+          isDisabled={false}
+          isInvalid={messagePassword}
+          isReadOnly={false}
+          isRequiered={true}
+        >
+          <FormControlLabel mb="$1">
+            <FormControlLabelText>Password</FormControlLabelText>
+          </FormControlLabel>
+          <Input>
+            <InputField 
+              autoCorrect={false} 
+              type="password" 
+              defaultValue="" 
+              placeholder="Password"
+              onChangeText={(value) => {
+                setPassword(value);
+                setMessagePassword("");
+              }}  
+            />
+          </Input>
+          
+          <FormControlError>
+            <FormControlErrorIcon as={LockIcon}/>
+            <FormControlErrorText>{messagePassword}.</FormControlErrorText>
           </FormControlError>
         </FormControl>
         <FormControl mt="$2">
