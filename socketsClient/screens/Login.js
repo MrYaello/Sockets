@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useLayoutEffect} from "react";
 import { 
   FormControl,
   Box,
@@ -18,28 +18,46 @@ import {
 import { SafeAreaView, Text } from "react-native";
 import socket from "../assets/utils/socket.js";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Temporal, estaría bien migrar a SQLite
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry.js";
 
-const storeUsername = async () => {
+const store = async (key, value) => {
   try {
-    await AsyncStorage.setItem("username", username);
+    await AsyncStorage.setItem(key, value);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
-
-const handleSignIn = () => {
-  if (!username) setMessageUsername("Obligaroy field.");
-  else {
-
-  }
-  if (!password) setMessagePassword("Obligaroy field.");
-}
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [messagePassword, setMessagePassword] = useState("");
   const [messageUsername, setMessageUsername] = useState("");
+
+  const handleSignIn = () => {
+    var safeUsername = username.trim();
+    if (!password.trim()) setMessagePassword("Obligaroy field.");
+    if (!safeUsername) setMessageUsername("Obligaroy field.");
+    else {
+      socket.emit("validateUsername", safeUsername);
+      socket.off("validateUsername").on("validateUsername", (response) => {
+        if (response.length == 0) {
+          setMessageUsername("Credentials not registered.");
+        } else {
+          socket.emit("login", safeUsername, password.trim());
+          socket.off("login").on("login", (auth) => {
+            if (auth.length == 0) {
+              setMessagePassword("Invalid password.");
+            } else {
+              store("username", safeUsername);
+              store("id", toString(auth[0].user_id));
+              navigation.navigate("Chat");
+            }
+          });
+        }
+      });
+    }
+  }
 
   return (
     <SafeAreaView style={{
@@ -112,7 +130,7 @@ const Login = ({ navigation }) => {
           
           <FormControlError>
             <FormControlErrorIcon as={LockIcon}/>
-            <FormControlErrorText>{messagePassword}.</FormControlErrorText>
+            <FormControlErrorText>{messagePassword}</FormControlErrorText>
           </FormControlError>
         </FormControl>
         <FormControl mt="$2">

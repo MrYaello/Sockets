@@ -18,11 +18,25 @@ import {
   ScrollView
 } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const getStore = async (key, setter) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      setter(value);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 
 const Chat = ({ navigation }) => {
+  const [username, setUsername] = useState("");
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   useLayoutEffect(() => {
+    getStore("username", setUsername);
     socket.emit("requestUsers", false);
     socket.on("requestUsers", (response) => setData(response));
   }, []);
@@ -32,11 +46,11 @@ const Chat = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Heading mt="7%">Chats</Heading>
+      <Heading mt="7%" mb="2%">{username}</Heading>
       <Box
         pl="$3"
         $base-minWidth="100%"
-        $base-minHeight="93%"
+        $base-minHeight="91%"
         >
         {(data.length > 0) 
         ? (
