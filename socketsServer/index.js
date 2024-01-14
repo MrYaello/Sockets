@@ -14,7 +14,7 @@ const sql = mysql.createConnection({
 
 
 sql.connect((err) => {
-  if (err) throw err;
+  if (err) console.log(err);
   console.log("[Server] Connected to SQL.")
 })
 
@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
       //Implementar
     } else {
       sql.query("SELECT user_id AS \"index\", username, avatar, state FROM user", (err, result) => {
-        if (err) throw err;
+        if (err) console.log(err);
         socket.emit("requestUsers", result);
       });
     }
@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
   socket.on("validateUsername", (auth) => {
     let query = "SELECT user_id FROM user WHERE username=? OR email=? OR phonenumber=?"; 
     sql.query(query, [auth, auth, auth], (err, result) => {
-      if (err) throw err;
+      if (err) console.log(err);
       socket.emit("validateUsername", result);
     });
   });
@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
   socket.on("login", (username, password) => {
     let query = "SELECT user_id FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
     sql.query(query, [username, password, username, password, username, password], (err, result) => {
-      if (err) throw err;
+      if (err) console.log(err);
       socket.emit("login", result);
     });
   });
@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
   socket.on("register", (username, password, email, phonenumber) => {
     let query = "INSERT INTO user (username, password, email, phonenumber) VALUES (?,?,?,?)";
     sql.query(query, [username, password, email, phonenumber], (err, result) => {
-      if (err) throw err;
+      if (err) console.log(err);
       socket.emit("register", result);
     });
   });
