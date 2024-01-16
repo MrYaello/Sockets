@@ -12,6 +12,8 @@ import socket from "./assets/utils/socket.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 
+import { StatusBar } from 'expo-status-bar';
+
 const Stack = createNativeStackNavigator();
 
 const getStore = async (key, setter) => {
@@ -73,6 +75,8 @@ export default function App() {
           />
           */}
       </NavigationContainer>
+
+      <StatusBar style="dark" />
     </GluestackUIProvider>
   );
 }
