@@ -2,6 +2,9 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import mysql from 'mysql';
+import { readFile } from 'fs';
+import handlebars from 'handlebars';
+import nodemailer from 'nodemailer';
 
 //SQL Connection.
 const sql = mysql.createConnection({
@@ -12,11 +15,37 @@ const sql = mysql.createConnection({
   multipleStatements: false
 });
 
-
 sql.connect((err) => {
   if (err) console.log(err);
   console.log("[Server] Connected to SQL.")
 })
+
+//SMTP Connection. Email Service.
+const sender = nodemailer.createTransport({
+  host: "smtppro.zoho.com",
+  port: 465,
+  secure: true,
+  auth: credentials,
+});
+
+const sendMail = async (code, email) => {
+  const html = await readFile('./index.html', 'utf-8');
+  const template = handlebars.compile(html);
+  const data = {
+    code: code,
+    email: email,
+  };
+  const parsedHtml = template(data);
+  const mail = {
+    from: 'admin@ylcode.online',
+    to: email,
+    subject: 'Verification code',
+    html: parsedHtml
+  };
+  sender.sendMail(mailOptions, (error, info) => {
+    if (error) console.log(error);
+  });
+}
 
 const app = express();
 const server = http.Server(app);
@@ -70,6 +99,10 @@ io.on("connection", (socket) => {
       socket.emit("register", result);
     });
   });
+
+  socket.on("testEmail", (code, email) => {
+    sendMail(code, email);
+  })
 
   socket.on("identify", (id) => {
     user_id = id;

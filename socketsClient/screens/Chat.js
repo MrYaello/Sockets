@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Pressable, SafeAreaView, Platform } from "react-native";
 import styles from "../assets/utils/styles.js";
-import Modal from "../component/Modal";
+import Modal from "../component/ModalGroup.js";
 import { 
   Box,
   VStack,

@@ -1,8 +1,9 @@
 import React, { useLayoutEffect, useState } from 'react';
 
-import Login from "./screens/Login"
-import Messaging from "./screens/Messaging"
-import Chat from "./screens/Chat"
+import Login from "./screens/Login";
+import Messaging from "./screens/Messaging";
+import Chat from "./screens/Chat";
+import Register from './screens/Register';
 
 import { config } from './config/gluestack-ui.config';
 import { NavigationContainer } from '@react-navigation/native';
@@ -58,6 +59,13 @@ export default function App() {
           ) 
           : (
           <Stack.Navigator>
+            <Stack.Screen
+            name='Register'
+            component={Register}
+            options={{
+              headerShown: false
+            }}
+            />
             <Stack.Screen
               name='Chat'
               component={Chat}

@@ -1,3 +1,4 @@
 /socketsClient/.expo/*
 /socketsClient/node_modules/*
 /socketsServer/node_modules/*
+/socketsServer/credentials.js
