@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("login", (username, password) => {
-    let query = "SELECT user_id FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
+    let query = "SELECT username FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
     sql.query(query, [username, password, username, password, username, password], (err, result) => {
       if (err) console.log(err);
       socket.emit("login", result);

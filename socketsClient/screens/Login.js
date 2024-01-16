@@ -48,7 +48,7 @@ const Login = ({ navigation }) => {
             if (auth.length == 0) {
               setMessagePassword("Invalid password.");
             } else {
-              store("username", safeUsername);
+              store("username", auth[0].username);
               navigation.navigate("Chat");
             }
           });
