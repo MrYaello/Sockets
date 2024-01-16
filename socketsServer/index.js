@@ -6,16 +6,11 @@ import fs from 'fs';
 import { promisify } from 'util';
 import handlebars from 'handlebars';
 import nodemailer from 'nodemailer';
-import credentials from './credentials.js';
+import credentialsSMTP from './credentialsSMTP.js';
+import credentialsSQL from './credentialsSQL.js';
 
 //SQL Connection.
-const sql = mysql.createConnection({
-  host: "localhost",
-  user: "pendejos",
-  password: "losVergudos",
-  database: "sockets",
-  multipleStatements: false
-});
+const sql = mysql.createConnection(credentialsSQL);
 
 sql.connect((err) => {
   if (err) console.log(err);
@@ -24,12 +19,7 @@ sql.connect((err) => {
 
 //SMTP Connection. Email Service.
 const readFile = promisify(fs.readFile);
-const sender = nodemailer.createTransport({
-  host: "smtppro.zoho.com",
-  port: 465,
-  secure: true,
-  auth: credentials,
-});
+const sender = nodemailer.createTransport(credentialsSMTP);
 
 const sendMail = async (code, email) => {
   const html = await readFile('./index.html', 'utf8');
