@@ -60,13 +60,6 @@ export default function App() {
           : (
           <Stack.Navigator>
             <Stack.Screen
-            name='Register'
-            component={Register}
-            options={{
-              headerShown: false
-            }}
-            />
-            <Stack.Screen
               name='Chat'
               component={Chat}
               options={{
