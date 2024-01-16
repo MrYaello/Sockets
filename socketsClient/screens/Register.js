@@ -20,6 +20,7 @@ import { SafeAreaView } from "react-native";
 import socket from "../assets/utils/socket.js";
 
 const sendMail = (code, email) => {
+  console.log("asd");
   socket.emit("testEmail", code, email);
 }
 

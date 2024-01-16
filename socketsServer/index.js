@@ -45,7 +45,7 @@ const sendMail = async (code, email) => {
     subject: 'Verification code',
     html: parsedHtml
   };
-  sender.sendMail(mailOptions, (error, info) => {
+  sender.sendMail(mail, (error, info) => {
     if (error) console.log(error);
     console.log(info);
   });
