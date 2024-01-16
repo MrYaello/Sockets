@@ -2,7 +2,8 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import mysql from 'mysql';
-import { readFile } from 'fs';
+import { fs } from 'fs';
+import { promisify } from 'util';
 import handlebars from 'handlebars';
 import nodemailer from 'nodemailer';
 import credentials from './credentials.js';
@@ -22,6 +23,7 @@ sql.connect((err) => {
 })
 
 //SMTP Connection. Email Service.
+const readFile = promisify(fs.readFile);
 const sender = nodemailer.createTransport({
   host: "smtppro.zoho.com",
   port: 465,
@@ -30,7 +32,7 @@ const sender = nodemailer.createTransport({
 });
 
 const sendMail = async (code, email) => {
-  const html = await readFile('./index.html', 'utf-8');
+  const html = await readFile('./index.html', 'utf8');
   const template = handlebars.compile(html);
   const data = {
     code: code,
