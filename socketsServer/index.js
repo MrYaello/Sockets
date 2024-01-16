@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import mysql from 'mysql';
-import { fs } from 'fs';
+import fs from 'fs';
 import { promisify } from 'util';
 import handlebars from 'handlebars';
 import nodemailer from 'nodemailer';
