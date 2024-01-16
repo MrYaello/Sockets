@@ -75,7 +75,6 @@ export default function App() {
           />
           */}
       </NavigationContainer>
-
       <StatusBar style="dark" />
     </GluestackUIProvider>
   );

@@ -12,9 +12,10 @@ import {
   Heading,
   Fab,
   FabIcon,
+  MenuIcon,
   EditIcon, 
-  Divider,
   AvatarFallbackText,
+  Icon,
   ScrollView
 } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket.js";
@@ -40,17 +41,25 @@ const Chat = ({ navigation }) => {
     socket.emit("requestUsers", false);
     socket.on("requestUsers", (response) => setData(response));
   }, []);
+
   useEffect(() => {
     socket.on("requestUsers", (response) => setData(response));
-  })
+  });
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Heading mt={Platform.OS === "android" && "7%"} mb="2%">{username}</Heading>
+      <Box height={Platform.OS === "android" && "7%"} mt="2%" mb="2%">
+        <HStack style={{justifyContent: "space-between", flex: 1}} alignItems="center">
+          <Heading>{username}</Heading>
+          <Pressable>
+            <Icon size="xl" as={MenuIcon}></Icon> 
+          </Pressable>
+        </HStack>
+      </Box>
       <Box
         pl="$3"
         $base-minWidth="100%"
-        $base-minHeight="91%"
+        $base-minHeight="90%"
         >
         {(data.length > 0) 
         ? (
@@ -65,8 +74,7 @@ const Chat = ({ navigation }) => {
                   <HStack space="sm" alignItems="center" key={chatData.index}>
                     <Avatar size="md">
                       <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
-                      <AvatarImage alt={alt} source={source}
-                      />
+                      <AvatarImage alt={alt} source={source}/>
                     </Avatar>
                     <VStack>
                       <Heading>{chatData.username}</Heading>
