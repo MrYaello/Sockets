@@ -30,7 +30,7 @@ const Register = ({ navigation }) => {
     mt="$20"
     flexDirection="row"
     justifyContent="space-between"
-    onPress={sendMail("000000", "yael@ylcode.online")}
+    onPress={sendMail("000000", "lozanoy6@gmail.com")}
   >
     <ButtonText 
       fontSize="$sm" 

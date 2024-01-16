@@ -40,7 +40,7 @@ const sendMail = async (code, email) => {
   };
   const parsedHtml = template(data);
   const mail = {
-    from: 'admin@ylcode.online',
+    from: '"YLCode Admin 👻" <admin@ylcode.online>',
     to: email,
     subject: 'Verification code',
     html: parsedHtml
