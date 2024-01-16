@@ -46,13 +46,16 @@ const Chat = ({ navigation }) => {
     socket.on("requestUsers", (response) => setData(response));
   });
 
+  const [showMenu, setShowMenu] = useState(false);
+  const handleMenu = () => setShowMenu(!showMenu);
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Box height={Platform.OS === "android" && "7%"} mt="2%" mb="2%">
-        <HStack style={{justifyContent: "space-between", flex: 1}} alignItems="center">
+      <Box height={Platform.OS === "android" && "7%"} mt="2%" mb="2%" style={{alignItems: "center", width: "100%"}}>
+        <HStack style={{justifyContent: "space-between", height: "100%", width: "90%", alignItems: "center"}}>
           <Heading>{username}</Heading>
-          <Pressable>
-            <Icon size="xl" as={MenuIcon}></Icon> 
+          <Pressable onPress={handleMenu}>
+            <Icon size="2xl" as={MenuIcon}></Icon> 
           </Pressable>
         </HStack>
       </Box>
