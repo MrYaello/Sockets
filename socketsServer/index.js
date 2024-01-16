@@ -45,6 +45,7 @@ const sendMail = async (code, email) => {
   };
   sender.sendMail(mailOptions, (error, info) => {
     if (error) console.log(error);
+    console.log(info);
   });
 }
 
@@ -102,6 +103,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("testEmail", (code, email) => {
+    console.log("asd");
     sendMail(code, email);
   })
 
