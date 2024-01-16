@@ -18,7 +18,6 @@ import {
 import { SafeAreaView, Text } from "react-native";
 import socket from "../assets/utils/socket.js";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Temporal, estaría bien migrar a SQLite
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry.js";
 
 const store = async (key, value) => {
   try {
@@ -50,7 +49,6 @@ const Login = ({ navigation }) => {
               setMessagePassword("Invalid password.");
             } else {
               store("username", safeUsername);
-              store("id", toString(auth[0].user_id));
               navigation.navigate("Chat");
             }
           });
@@ -151,7 +149,5 @@ const Login = ({ navigation }) => {
     </SafeAreaView>
   )
 }
-
-
 
 export default Login;

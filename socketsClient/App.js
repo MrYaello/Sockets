@@ -26,14 +26,14 @@ const getStore = async (key, setter) => {
 };
 
 export default function App() {
-  const [id, setId] = useState("");
+  const [username, setUsername] = useState("");
   useLayoutEffect(() => {
-    getStore("id", setId);
+    getStore("username", setUsername);
   }, []);
   return (
     <GluestackUIProvider config={config}>
       <NavigationContainer>
-        {(id == "") 
+        {(username == "") 
         ? (
           <Stack.Navigator>
             <Stack.Screen
