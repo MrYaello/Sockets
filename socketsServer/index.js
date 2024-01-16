@@ -5,7 +5,7 @@ import mysql from 'mysql';
 import { readFile } from 'fs';
 import handlebars from 'handlebars';
 import nodemailer from 'nodemailer';
-import credentials from './credentials';
+import credentials from './credentials.js';
 
 //SQL Connection.
 const sql = mysql.createConnection({
