@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { Pressable, SafeAreaView } from "react-native";
+import { Pressable, SafeAreaView, Platform } from "react-native";
 import styles from "../assets/utils/styles.js";
 import Modal from "../component/Modal";
 import { 
@@ -46,7 +46,7 @@ const Chat = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Heading mt="7%" mb="2%">{username}</Heading>
+      <Heading mt={Platform.OS === "android" && "7%"} mb="2%">{username}</Heading>
       <Box
         pl="$3"
         $base-minWidth="100%"
