@@ -82,5 +82,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`[Server] Listening on http://localhost:${PORT}`);
+  console.log(`[Server] Listening on http://ylcode.online:${PORT}`);
 });
