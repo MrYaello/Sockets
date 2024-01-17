@@ -1,17 +1,26 @@
 import {Menu, Button, MenuItem, Icon, MenuItemLabel, MenuIcon, Avatar, AvatarFallbackText, 
     AvatarImage, Text, HStack, VStack, Box } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ChatMenu = ({username}) => {
 
     const [avatarSource, setAvatarSource] = useState();
 
-    socket.emit("getAvatarSource", username);
-    socket.off("getAvatarSource").on("getAvatarSource", (response) => {
-    setAvatarSource(response);
-    });
+    useEffect(() => {
+        const handleGetAvatarSource = (response) => {
+          setAvatarSource(response);
+        };
     
+        socket.emit("getAvatarSource", username);
+    
+        socket.on("getAvatarSource", handleGetAvatarSource);
+    
+        return () => {
+          socket.off("getAvatarSource", handleGetAvatarSource);
+        };
+      }, [username]);
+        
     return(
     <Menu
     placement="left"
@@ -30,7 +39,7 @@ const ChatMenu = ({username}) => {
         <HStack>
             <Avatar size="sm">
                 <AvatarFallbackText>{username}</AvatarFallbackText>
-                <AvatarImage alt={`${username} Avatar`} source={{["uri"]: `${avatarSource}`}}/>
+                <AvatarImage alt={`${username} Avatar`} source={{uri: `${avatarSource}`}}/>
             </Avatar>
             <VStack>
                 <Box>
