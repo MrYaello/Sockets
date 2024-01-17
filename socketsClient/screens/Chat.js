@@ -84,6 +84,7 @@ const Chat = ({ navigation }) => {
         <Fab 
           bg="$primary600" size="lg" 
           onPress={() => {setVisible(true)}}
+          style={Platform.OS === "ios" && {marginBottom: 30}}
           >
           <FabIcon as={EditIcon} /> 
         </Fab>
