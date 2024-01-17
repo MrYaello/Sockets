@@ -49,7 +49,9 @@ const Chat = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <Box height={Platform.OS === "android" && "7%"} mt="3%" mb="2%" style={{alignItems: "center", width: "100%"}}>
         <HStack style={{justifyContent: "space-between", height: "100%", width: "90%", alignItems: "center"}}>
-          <Heading>{username}</Heading>
+          <Heading style={Platform.OS === "ios" && {marginTop: 10, paddingBottom:30}}>
+            {username}
+          </Heading>
           <ChatMenu username={username}/>
         </HStack>
       </Box>
@@ -57,6 +59,7 @@ const Chat = ({ navigation }) => {
         pl="$3"
         $base-minWidth="100%"
         $base-minHeight="90%"
+        style={Platform.OS === "ios" && {paddingTop: 30}}
         >
         {(data.length > 0) 
         ? (
