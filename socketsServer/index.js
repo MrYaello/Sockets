@@ -95,6 +95,14 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("getAvatarSource", (username) => {
+    let query = "SELECT avatar FROM user WHERE username=?"
+    sql.query(query, [username], (err, result) =>{
+      if (err) console.log(err);
+      socket.emit("getAvatarSource", result);
+    });
+  });
+
   socket.on("testEmail", (code, email) => {
     console.log("asd");
     sendMail(code, email);
