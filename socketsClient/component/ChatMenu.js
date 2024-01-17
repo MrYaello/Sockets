@@ -2,6 +2,7 @@ import {Menu, Button, MenuItem, Icon, MenuItemLabel, MenuIcon, Avatar, AvatarFal
     AvatarImage, Text, HStack, VStack, Box } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket";
 import { useState, useEffect, useLayoutEffect } from "react";
+import { StyleSheet } from "react-native";
 
 const ChatMenu = ({username}) => {
 
@@ -12,12 +13,12 @@ const ChatMenu = ({username}) => {
     }, [username]);
         
     return (
-    <Menu
-    placement="left"
+    <Menu 
+    placement="bottom right"
     trigger={({ ...triggerProps }) => {
         return (
-        <Button {...triggerProps}>
-            <Icon size="2xl" as={MenuIcon}></Icon> 
+        <Button {...triggerProps} style={styles.menu} size="md">
+            <Icon size="xl" as={MenuIcon}></Icon> 
         </Button>
         )
     }}
@@ -44,5 +45,12 @@ const ChatMenu = ({username}) => {
     </MenuItem>
     </Menu>
 )}
+
+const styles = StyleSheet.create({
+    menu: {
+        marginTop: 15,
+        borderRadius: 13,
+    }
+});
 
 export default ChatMenu;
