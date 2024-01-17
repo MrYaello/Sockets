@@ -1,27 +1,17 @@
 import {Menu, Button, MenuItem, Icon, MenuItemLabel, MenuIcon, Avatar, AvatarFallbackText, 
     AvatarImage, Text, HStack, VStack, Box } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 
 const ChatMenu = ({username}) => {
 
     const [avatarSource, setAvatarSource] = useState();
-
-    useEffect(() => {
-        const handleGetAvatarSource = (response) => {
-          setAvatarSource(response);
-        };
-    
+    useLayoutEffect(() => {
         socket.emit("getAvatarSource", username);
-    
-        socket.on("getAvatarSource", handleGetAvatarSource);
-    
-        return () => {
-          socket.off("getAvatarSource", handleGetAvatarSource);
-        };
-      }, [username]);
+        socket.on("getAvatarSource", (response) => setAvatarSource(response));
+    }, [username]);
         
-    return(
+    return (
     <Menu
     placement="left"
     trigger={({ ...triggerProps }) => {
@@ -36,12 +26,12 @@ const ChatMenu = ({username}) => {
         {/* PuzzleIcon is imported from 'lucide-react-native' */}
         {/* <Icon as={PuzzleIcon} size="sm" mr="$2" /> */}
         {/* <MenuItemLabel size="sm">Profile</MenuItemLabel> */}
-        <HStack>
+        <HStack alignItems="center" justifyContent="space-between" width="50%">
             <Avatar size="sm">
                 <AvatarFallbackText>{username}</AvatarFallbackText>
                 <AvatarImage alt={`${username} Avatar`} source={{uri: `${avatarSource}`}}/>
             </Avatar>
-            <VStack>
+            <VStack ml="$1.5">
                 <Box>
                     <Text size="lg">{username}</Text>
                 </Box>

@@ -98,17 +98,11 @@ io.on("connection", (socket) => {
   socket.on("getAvatarSource", (username) => {
     let query = "SELECT avatar FROM user WHERE username=?"
     sql.query(query, [username], (err, result) =>{
-      if (err) {
-        console.error(err);
-        return;
-      }
-
+      if (err) console.error(err);
       if (result.length > 0) {
         const avatarSource = result[0].avatar;
         socket.emit("getAvatarSource", avatarSource);
       } else {
-        // Maneja el caso en el que el usuario no se encuentra en la base de datos
-        console.error("Usuario no encontrado");
         socket.emit("getAvatarSource", null);
       }
     });

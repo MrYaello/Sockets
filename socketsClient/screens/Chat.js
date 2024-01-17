@@ -47,10 +47,10 @@ const Chat = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Box height={Platform.OS === "android" && "7%"} mt="2%" mb="2%" style={{alignItems: "center", width: "100%"}}>
+      <Box height={Platform.OS === "android" && "7%"} mt="3%" mb="2%" style={{alignItems: "center", width: "100%"}}>
         <HStack style={{justifyContent: "space-between", height: "100%", width: "90%", alignItems: "center"}}>
           <Heading>{username}</Heading>
-            <ChatMenu username={username}/>
+          <ChatMenu username={username}/>
         </HStack>
       </Box>
       <Box
