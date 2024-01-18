@@ -13,9 +13,10 @@ import {
   ArrowRightIcon, 
   ButtonText,
   Button,
-  ButtonIcon, 
+  ButtonIcon,
+  Text,
   LockIcon} from "@gluestack-ui/themed";
-import { SafeAreaView, Text } from "react-native";
+import { SafeAreaView, Image} from "react-native";
 import socket from "../assets/utils/socket.js";
 import styles from "../assets/utils/styles.js";
 
@@ -24,12 +25,14 @@ const sendMail = (code, email) => {
 }
 
 const Register = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [phonenumber, setPhonenumber] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [messagePassword, setMessagePassword] = useState("");
   const [messageUsername, setMessageUsername] = useState("");
 
-  const handleSignIn = () => {
+  const handleRegister = () => {
     var safeUsername = username.trim();
     if (!password.trim()) setMessagePassword("Obligaroy field.");
     if (!safeUsername) setMessageUsername("Obligaroy field.");
@@ -61,16 +64,88 @@ const Register = ({ navigation }) => {
         alignItems: "center",
         padding: 12,
         width: "100%",
+        height: "100%"
       }}>
-      <Box 
-        h="$32"
-        w="$72"
-      >
+      <Box style={{
+        position: "absolute",
+        flex: 1,
+        height: "85%",
+        justifyContent: "flex-start"
+      }}>
+        <Image
+        alt= "YLCode Logo"
+        source={{
+          uri: "http://ylcode.online:4000/uploads/textlogo512.png"
+        }}
+        style={{
+          height: 50,
+          width: 100
+        }}
+        />
+      </Box>
+      <Box width="80%">
         <Text style={{
-          alignSelf: "center",
           fontSize: 26,
+          paddingTop: 10,
           marginBottom: 10,
-        }}>Sign in </Text>
+          alignSelf: "center"
+        }}>Register </Text>
+        <FormControl
+          size="lg"
+          isDisabled={false}
+          isInvalid={messageUsername}
+          isReadOnly={false}
+          isRequiered={true}
+        >
+          <FormControlLabel mb="$1">
+            <FormControlLabelText>Email</FormControlLabelText>
+          </FormControlLabel>
+          <Input>
+            <InputField 
+              autoCorrect={false} 
+              type="text" 
+              defaultValue="" 
+              placeholder="Where can I mail you?"
+              onChangeText={(value) => {
+                setUsername(value);
+                setMessageUsername("");
+              }}  
+            />
+          </Input>
+          <FormControlError>
+            <FormControlErrorIcon as={AlertCircleIcon}/>
+            <FormControlErrorText>{messageUsername}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
+        
+        <FormControl
+          size="lg"
+          isDisabled={false}
+          isInvalid={messageUsername}
+          isReadOnly={false}
+          isRequiered={true}
+        >
+          <FormControlLabel mb="$1">
+            <FormControlLabelText>Phone number</FormControlLabelText>
+          </FormControlLabel>
+          <Input>
+            <InputField 
+              autoCorrect={false} 
+              type="text" 
+              defaultValue="" 
+              placeholder="Where can I call you?"
+              onChangeText={(value) => {
+                setUsername(value);
+                setMessageUsername("");
+              }}  
+            />
+          </Input>
+          <FormControlError>
+            <FormControlErrorIcon as={AlertCircleIcon}/>
+            <FormControlErrorText>{messageUsername}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
+
         <FormControl
           size="lg"
           isDisabled={false}
@@ -86,7 +161,7 @@ const Register = ({ navigation }) => {
               autoCorrect={false} 
               type="text" 
               defaultValue="" 
-              placeholder="Username, Email or Phone number"
+              placeholder="Choose your alter ego"
               onChangeText={(value) => {
                 setUsername(value);
                 setMessageUsername("");
@@ -95,7 +170,7 @@ const Register = ({ navigation }) => {
           </Input>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
-            <FormControlErrorText>{messageUsername}</FormControlErrorText>
+            <FormControlErrorText></FormControlErrorText>
           </FormControlError>
         </FormControl>
 
@@ -114,7 +189,7 @@ const Register = ({ navigation }) => {
               autoCorrect={false} 
               type="password" 
               defaultValue="" 
-              placeholder="Password"
+              placeholder="Forge the key to your digital realm"
               onChangeText={(value) => {
                 setPassword(value);
                 setMessagePassword("");
@@ -123,20 +198,20 @@ const Register = ({ navigation }) => {
           </Input>
           
           <FormControlError>
-            <FormControlErrorIcon as={LockIcon}/>
-            <FormControlErrorText>{messagePassword}</FormControlErrorText>
+            <FormControlErrorIcon as={AlertCircleIcon}/>
+            <FormControlErrorText></FormControlErrorText>
           </FormControlError>
         </FormControl>
         <FormControl mt="$2">
           <Button 
             flexDirection="row"
             justifyContent="space-between"
-            onPress={handleSignIn}
+            
           >
             <ButtonText 
               fontSize="$sm" 
               fontWeight="$medium">
-              Get Started
+              Start the odyssey
             </ButtonText>
             <ButtonIcon as={ArrowRightIcon}/>
           </Button>
