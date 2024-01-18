@@ -36,7 +36,6 @@ const Login = ({ navigation }) => {
   const [messageUsername, setMessageUsername] = useState("");
 
   const handleSignIn = () => {
-    console.log("a");
     var safeUsername = username.trim();
     if (!password.trim()) setMessagePassword("Obligaroy field.");
     if (!safeUsername) setMessageUsername("Obligaroy field.");

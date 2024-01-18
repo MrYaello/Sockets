@@ -105,7 +105,7 @@ const Register = ({ navigation }) => {
               autoCorrect={false} 
               type="text" 
               defaultValue="" 
-              placeholder="Where can I mail you?"
+              placeholder="Where could we email you?"
               onChangeText={(value) => {
                 setUsername(value);
                 setMessageUsername("");
@@ -133,7 +133,7 @@ const Register = ({ navigation }) => {
               autoCorrect={false} 
               type="text" 
               defaultValue="" 
-              placeholder="Where can I call you?"
+              placeholder="Where should we call you?"
               onChangeText={(value) => {
                 setUsername(value);
                 setMessageUsername("");
