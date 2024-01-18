@@ -17,7 +17,7 @@ import {
   LockIcon} from "@gluestack-ui/themed";
 import { SafeAreaView, Text } from "react-native";
 import socket from "../assets/utils/socket.js";
-import storage from "../assets/utils/storage.js";
+import { save } from "../assets/utils/storage.js";
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -40,7 +40,7 @@ const Login = ({ navigation }) => {
             if (auth.length == 0) {
               setMessagePassword("Invalid password.");
             } else {
-              storage.save("username", auth[0].username);
+              save("username", auth[0].username);
               navigation.navigate("Chat");
             }
           });

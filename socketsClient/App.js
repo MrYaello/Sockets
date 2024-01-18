@@ -11,7 +11,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import socket from "./assets/utils/socket.js";
 import { GluestackUIProvider } from '@gluestack-ui/themed';
-import storage from './assets/utils/storage';
+import { get } from './assets/utils/storage';
 
 import { StatusBar } from 'expo-status-bar';
 
@@ -20,7 +20,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [username, setUsername] = useState("");
   useLayoutEffect(() => {
-    storage.get("username", setUsername);
+    get("username", setUsername);
   }, []);
   return (
     <GluestackUIProvider config={config}>
