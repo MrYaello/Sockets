@@ -27,8 +27,8 @@ const ChatMenu = ({username}) => {
         {/* PuzzleIcon is imported from 'lucide-react-native' */}
         {/* <Icon as={PuzzleIcon} size="sm" mr="$2" /> */}
         {/* <MenuItemLabel size="sm">Profile</MenuItemLabel> */}
-        <HStack alignItems="center" justifyContent="space-between" width="50%">
-            <Avatar size="sm">
+        <HStack alignItems="center" justifyContent="space-between" width="60%">
+            <Avatar size="md">
                 <AvatarFallbackText>{username}</AvatarFallbackText>
                 <AvatarImage alt={`${username} Avatar`} source={{uri: `${avatarSource}`}}/>
             </Avatar>
