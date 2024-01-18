@@ -17,6 +17,7 @@ import {
   LockIcon} from "@gluestack-ui/themed";
 import { SafeAreaView, Text } from "react-native";
 import socket from "../assets/utils/socket.js";
+import styles from "../assets/utils/styles.js";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Temporal, estaría bien migrar a SQLite
 
 const store = async (key, value) => {
@@ -59,13 +60,13 @@ const Login = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{
-      flex: 1,
-      backgroundColor: "#EEF1FF",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 12,
-      width: "100%",
-    }}>
+        justifyContent: "center",
+        flex: 1,
+        backgroundColor: "#EEF1FF",
+        alignItems: "center",
+        padding: 12,
+        width: "100%",
+      }}>
       <Box 
         h="$32"
         w="$72"
