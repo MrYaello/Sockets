@@ -10,17 +10,28 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import socket from "./assets/utils/socket.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GluestackUIProvider } from '@gluestack-ui/themed';
-import { get } from './assets/utils/storage';
 
 import { StatusBar } from 'expo-status-bar';
 
 const Stack = createNativeStackNavigator();
 
+const getStore = async (key, setter) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      setter(value);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export default function App() {
   const [username, setUsername] = useState("");
   useLayoutEffect(() => {
-    get("username", setUsername);
+    getStore("username", setUsername);
   }, []);
   return (
     <GluestackUIProvider config={config}>

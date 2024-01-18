@@ -18,14 +18,15 @@ import {
   ScrollView
 } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket.js";
-import { get } from "../assets/utils/storage.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import storage from "../assets/utils/storage.js";
 
 const Chat = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   useLayoutEffect(() => {
-    get("username", setUsername);
+    storage.get("username", setUsername);
     socket.emit("requestUsers", false);
     socket.on("requestUsers", (response) => setData(response));
   }, []);
