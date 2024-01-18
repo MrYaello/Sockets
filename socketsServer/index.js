@@ -22,7 +22,7 @@ const readFile = promisify(fs.readFile);
 const sender = nodemailer.createTransport(credentialsSMTP);
 
 const sendMail = async (code, email) => {
-  const html = await readFile('./index.html', 'utf8');
+  const html = await readFile('./email.html', 'utf8');
   const template = handlebars.compile(html);
   const data = {
     code: code,
@@ -108,10 +108,9 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("testEmail", (code, email) => {
-    console.log("asd");
+  socket.on("sendVerificationEmail", (code, email) => {
     sendMail(code, email);
-  })
+  });
 
   socket.on("identify", (id) => {
     user_id = id;
