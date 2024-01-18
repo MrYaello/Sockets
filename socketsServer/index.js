@@ -2,21 +2,44 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import mysql from 'mysql';
+import fs from 'fs';
+import { promisify } from 'util';
+import handlebars from 'handlebars';
+import nodemailer from 'nodemailer';
+import credentialsSMTP from './credentialsSMTP.js';
+import credentialsSQL from './credentialsSQL.js';
 
 //SQL Connection.
-const sql = mysql.createConnection({
-  host: "localhost",
-  user: "pendejos",
-  password: "losVergudos",
-  database: "sockets",
-  multipleStatements: false
-});
-
+const sql = mysql.createConnection(credentialsSQL);
 
 sql.connect((err) => {
   if (err) console.log(err);
   console.log("[Server] Connected to SQL.")
 })
+
+//SMTP Connection. Email Service.
+const readFile = promisify(fs.readFile);
+const sender = nodemailer.createTransport(credentialsSMTP);
+
+const sendMail = async (code, email) => {
+  const html = await readFile('./index.html', 'utf8');
+  const template = handlebars.compile(html);
+  const data = {
+    code: code,
+    email: email,
+  };
+  const parsedHtml = template(data);
+  const mail = {
+    from: '"YLCode Admin 👻" <admin@ylcode.online>',
+    to: email,
+    subject: 'Verification code',
+    html: parsedHtml
+  };
+  sender.sendMail(mail, (error, info) => {
+    if (error) console.log(error);
+    console.log(info);
+  });
+}
 
 const app = express();
 const server = http.Server(app);
@@ -27,6 +50,7 @@ const PORT = 4000;
 
 app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
+app.use('/uploads', express.static('uploads'))
 
 app.get('/', (req, res) => {
   res.json(chatRooms);
@@ -71,6 +95,24 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("getAvatarSource", (username) => {
+    let query = "SELECT avatar FROM user WHERE username=?"
+    sql.query(query, [username], (err, result) =>{
+      if (err) console.error(err);
+      if (result.length > 0) {
+        const avatarSource = result[0].avatar;
+        socket.emit("getAvatarSource", avatarSource);
+      } else {
+        socket.emit("getAvatarSource", null);
+      }
+    });
+  });
+
+  socket.on("testEmail", (code, email) => {
+    console.log("asd");
+    sendMail(code, email);
+  })
+
   socket.on("identify", (id) => {
     user_id = id;
   }); 
@@ -82,5 +124,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`[Server] Listening on http://localhost:${PORT}`);
+  console.log(`[Server] Listening on http://ylcode.online:${PORT}`);
 });

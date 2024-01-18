@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { Pressable, SafeAreaView, Platform } from "react-native";
+import { SafeAreaView, Platform } from "react-native";
 import styles from "../assets/utils/styles.js";
-import Modal from "../component/Modal";
+import Modal from "../component/ModalGroup.js";
+import ChatMenu from "../component/ChatMenu.js";
 import { 
   Box,
   VStack,
@@ -13,7 +14,6 @@ import {
   Fab,
   FabIcon,
   EditIcon, 
-  Divider,
   AvatarFallbackText,
   ScrollView
 } from "@gluestack-ui/themed";
@@ -40,17 +40,26 @@ const Chat = ({ navigation }) => {
     socket.emit("requestUsers", false);
     socket.on("requestUsers", (response) => setData(response));
   }, []);
+
   useEffect(() => {
     socket.on("requestUsers", (response) => setData(response));
-  })
+  });
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Heading mt={Platform.OS === "android" && "7%"} mb="2%">{username}</Heading>
+      <Box height={Platform.OS === "android" && "7%"} mt="3%" mb="2%" style={{alignItems: "center", width: "100%"}}>
+        <HStack style={{justifyContent: "space-between", height: "100%", width: "90%", alignItems: "center"}}>
+          <Heading style={Platform.OS === "ios" && {marginTop: 10, paddingBottom:30}}>
+            {username}
+          </Heading>
+          <ChatMenu username={username}/>
+        </HStack>
+      </Box>
       <Box
         pl="$3"
         $base-minWidth="100%"
-        $base-minHeight="91%"
+        $base-minHeight="90%"
+        style={Platform.OS === "ios" && {paddingTop: 30}}
         >
         {(data.length > 0) 
         ? (
@@ -65,8 +74,7 @@ const Chat = ({ navigation }) => {
                   <HStack space="sm" alignItems="center" key={chatData.index}>
                     <Avatar size="md">
                       <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
-                      <AvatarImage alt={alt} source={source}
-                      />
+                      <AvatarImage alt={alt} source={source}/>
                     </Avatar>
                     <VStack>
                       <Heading>{chatData.username}</Heading>
