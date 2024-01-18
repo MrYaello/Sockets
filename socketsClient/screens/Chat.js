@@ -19,24 +19,14 @@ import {
 } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const getStore = async (key, setter) => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      setter(value);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-};
+import storage from "../assets/utils/storage.js";
 
 const Chat = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   useLayoutEffect(() => {
-    getStore("username", setUsername);
+    storage.get("username", setUsername);
     socket.emit("requestUsers", false);
     socket.on("requestUsers", (response) => setData(response));
   }, []);
