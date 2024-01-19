@@ -1,49 +1,54 @@
-import { Menu, MenuItem, MenuItemLabel, MenuIcon, Button, Icon, Avatar, AvatarFallbackText, 
-    AvatarImage, Text, HStack, VStack, Box } from "@gluestack-ui/themed";
+import { MenuIcon, Button, Icon, Avatar, AvatarFallbackText, AvatarImage, Text, HStack, VStack, Box, Actionsheet, 
+    ActionsheetBackdrop, ActionsheetContent, ActionsheetItem, ActionsheetDragIndicatorWrapper, ActionsheetDragIndicator, 
+    ActionsheetItemText } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import { StyleSheet } from "react-native";
 
-const ChatMenu = ({username}) => {
+const ChatMenu = ({username, setVisibleModalLogOut}) => {
 
     const [avatarSource, setAvatarSource] = useState();
     useLayoutEffect(() => {
         socket.emit("getAvatarSource", username);
         socket.on("getAvatarSource", (response) => setAvatarSource(response));
     }, [username]);
+    const [showActionsheet, setShowActionsheet] = useState(false)
+    const handleClose = () => setShowActionsheet(!showActionsheet)
+    const handleLogOut = () => {
+        handleClose()
+        setVisibleModalLogOut(true)
+    }
         
     return (
-    <Menu 
-    placement="bottom right"
-    trigger={({ ...triggerProps }) => {
-        return (
-        <Button {...triggerProps} style={styles.menu} size="md">
-            <Icon size="xl" as={MenuIcon}></Icon> 
-        </Button>
-        )
-    }}
-    >   
-    <MenuItem key="Perfil" textValue="Perfil">
-        {/* PuzzleIcon is imported from 'lucide-react-native' */}
-        {/* <Icon as={PuzzleIcon} size="sm" mr="$2" /> */}
-        {/* <MenuItemLabel size="sm">Profile</MenuItemLabel> */}
-        <HStack alignItems="center" justifyContent="space-between" width="60%">
-            <Avatar size="md">
-                <AvatarFallbackText>{username}</AvatarFallbackText>
-                <AvatarImage alt={`${username} Avatar`} source={{uri: `${avatarSource}`}}/>
-            </Avatar>
-            <VStack ml="$1.5">
-                <Box>
-                    <Text size="lg">{username}</Text>
-                </Box>
-            </VStack>
-        </HStack>
-    </MenuItem>
-    <MenuItem key="Add account" textValue="Add account">
-        {/* <Icon as={AddIcon} size="sm" mr="$2" /> */}
-        <MenuItemLabel size="sm">Log out</MenuItemLabel>
-    </MenuItem>
-    </Menu>
+        <Box>
+            <Button onPress={handleClose} style={styles.menu} size="md">
+                <Icon size="xl" as={MenuIcon}></Icon>
+            </Button>
+            <Actionsheet isOpen={showActionsheet} onClose={handleClose} zIndex={900}>
+                <ActionsheetBackdrop/>
+                <ActionsheetContent h="$72" zIndex={999}>
+                    <ActionsheetDragIndicatorWrapper>
+                        <ActionsheetDragIndicator />
+                    </ActionsheetDragIndicatorWrapper>
+                    <ActionsheetItem onPress={handleLogOut}>
+                        <HStack alignItems="center" justifyContent="space-between" width="50%">
+                            <Avatar size="md">
+                                <AvatarFallbackText>{username}</AvatarFallbackText>
+                                <AvatarImage alt={`${username} Avatar`} source={{uri: `${avatarSource}`}}/>
+                            </Avatar>
+                            <VStack ml="$1.5">
+                                <Box>
+                                    <Text size="lg">{username}</Text>
+                                </Box>
+                            </VStack>
+                        </HStack>
+                    </ActionsheetItem>
+                    <ActionsheetItem onPress={handleLogOut}>
+                        <ActionsheetItemText>Log out</ActionsheetItemText>
+                    </ActionsheetItem>
+                </ActionsheetContent>
+            </Actionsheet>
+        </Box>
 )}
 
 const styles = StyleSheet.create({
