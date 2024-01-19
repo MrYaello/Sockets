@@ -158,7 +158,7 @@ const Login = ({ navigation }) => {
             <ButtonText 
               fontSize="$sm" 
               fontWeight="$medium">
-              Get Started
+              Ready to go
             </ButtonText>
             <ButtonIcon as={ArrowRightIcon}/>
           </Button>

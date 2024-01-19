@@ -15,8 +15,9 @@ import {
   Button,
   ButtonIcon,
   Text,
+  CheckIcon,
   LockIcon} from "@gluestack-ui/themed";
-import { SafeAreaView, Image} from "react-native";
+import { SafeAreaView, Image, Keyboard } from "react-native";
 import socket from "../assets/utils/socket.js";
 import styles from "../assets/utils/styles.js";
 
@@ -29,9 +30,12 @@ const Register = ({ navigation }) => {
   const [phonenumber, setPhonenumber] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [emailVerified, setEmailVerified] = useState(false);
   const [messagePassword, setMessagePassword] = useState("");
   const [messageUsername, setMessageUsername] = useState("");
-
+  const [messageEmail, setMessageEmail] = useState("");
+  const [messagePhonenumber, setMessagePhonenumber] = useState("");
+  // ^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$ Regex Email
   const handleRegister = () => {
     var safeUsername = username.trim();
     if (!password.trim()) setMessagePassword("Obligaroy field.");
@@ -69,7 +73,8 @@ const Register = ({ navigation }) => {
       <Box style={{
         position: "absolute",
         flex: 1,
-        height: "85%",
+        height: "100%",
+        paddingTop: "27%",
         justifyContent: "flex-start"
       }}>
         <Image
@@ -93,40 +98,46 @@ const Register = ({ navigation }) => {
         <FormControl
           size="lg"
           isDisabled={false}
-          isInvalid={messageUsername}
+          isInvalid={false}
           isReadOnly={false}
           isRequiered={true}
         >
           <FormControlLabel mb="$1">
             <FormControlLabelText>Email</FormControlLabelText>
           </FormControlLabel>
-          <Input>
+          <Box flexDirection="row">
+          <Input width="68%">
             <InputField 
               autoCorrect={false} 
               type="text" 
-              defaultValue="" 
+              defaultValue=""
               placeholder="Where could we email you?"
               onChangeText={(value) => {
-                setUsername(value);
-                setMessageUsername("");
+                setEmail(value);
+                setMessageEmail("");
               }}  
             />
           </Input>
+          <Button width="28%" ml="4%" flexDirection="row" justifyContent="center">
+            <ButtonText>Verify</ButtonText>
+            <ButtonIcon ml="$2" as={CheckIcon}/>
+          </Button>
+          </Box>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
-            <FormControlErrorText>{messageUsername}</FormControlErrorText>
+            <FormControlErrorText>{messageEmail}</FormControlErrorText>
           </FormControlError>
         </FormControl>
         
         <FormControl
           size="lg"
-          isDisabled={false}
+          isDisabled={!emailVerified}
           isInvalid={messageUsername}
           isReadOnly={false}
           isRequiered={true}
         >
           <FormControlLabel mb="$1">
-            <FormControlLabelText>Phone number</FormControlLabelText>
+            <FormControlLabelText color={!emailVerified ? "$textLight400" : "$black"}>Phone number</FormControlLabelText>
           </FormControlLabel>
           <Input>
             <InputField 
@@ -148,13 +159,13 @@ const Register = ({ navigation }) => {
 
         <FormControl
           size="lg"
-          isDisabled={false}
+          isDisabled={!emailVerified}
           isInvalid={messageUsername}
           isReadOnly={false}
           isRequiered={true}
         >
           <FormControlLabel mb="$1">
-            <FormControlLabelText>Username</FormControlLabelText>
+            <FormControlLabelText color={!emailVerified ? "$textLight400" : "$black"}>Username</FormControlLabelText>
           </FormControlLabel>
           <Input>
             <InputField 
@@ -176,13 +187,13 @@ const Register = ({ navigation }) => {
 
         <FormControl
           size="lg"
-          isDisabled={false}
+          isDisabled={!emailVerified}
           isInvalid={messagePassword}
           isReadOnly={false}
           isRequiered={true}
         >
           <FormControlLabel mb="$1">
-            <FormControlLabelText>Password</FormControlLabelText>
+            <FormControlLabelText color={!emailVerified ? "$textLight400" : "$black"}>Password</FormControlLabelText>
           </FormControlLabel>
           <Input>
             <InputField 
