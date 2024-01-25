@@ -35,8 +35,8 @@ const Login = ({ navigation }) => {
 
   const handleSignIn = () => {
     var safeUsername = username.trim();
-    if (!password.trim()) setMessagePassword("Obligaroy field.");
-    if (!safeUsername) setMessageUsername("Obligaroy field.");
+    if (!password.trim()) setMessagePassword("Obligatory field.");
+    if (!safeUsername) setMessageUsername("Obligatory field.");
     else {
       socket.emit("validateUsername", safeUsername);
       socket.off("validateUsername").on("validateUsername", (response) => {

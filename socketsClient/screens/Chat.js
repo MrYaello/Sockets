@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { SafeAreaView, Platform } from "react-native";
+import { SafeAreaView, Platform, Pressable } from "react-native";
 import styles from "../assets/utils/styles.js";
 import Modal from "../component/ModalGroup.js";
 import ChatMenu from "../component/ChatMenu.js";
+import Messaging from "./Messaging.js";
 import { 
   Box,
   VStack,
@@ -31,14 +32,30 @@ const getStore = async (key, setter) => {
   }
 };
 
+const chats = [
+  {
+    username: "Yael",
+    avatar: "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
+    state: "Quiero pene"
+  },
+  {
+    username: "Luki",
+    avatar: "", //"https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
+    state: "Yo más AAAAAAAAA"
+  }
+];
+
 const Chat = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
+
   useLayoutEffect(() => {
-    getStore("username", setUsername);
+    /*getStore("username", setUsername);
     socket.emit("requestUsers", false);
-    socket.on("requestUsers", (response) => setData(response));
+    socket.on("requestUsers", (response) => setData(response));*/
+    setUsername("César Villegas");
+    setData(chats);
   }, []);
 
   useEffect(() => {
@@ -71,16 +88,26 @@ const Chat = ({ navigation }) => {
                 }
                 let alt = chatData.username + " Avatar"
                 return (
-                  <HStack space="sm" alignItems="center" key={chatData.index}>
-                    <Avatar size="md">
-                      <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
-                      <AvatarImage alt={alt} source={source}/>
-                    </Avatar>
-                    <VStack>
-                      <Heading>{chatData.username}</Heading>
-                      <Text>{chatData.state}</Text>
-                    </VStack>
-                  </HStack>
+                  <Pressable 
+                    onPress={() => {
+                      navigation.navigate("Messaging", {
+                        usr: chatData.username,
+                        st: chatData.state,
+                        avtr: chatData.avatar
+                      });
+                    }}
+                  >
+                    <HStack space="sm" alignItems="center" key={chatData.index}>
+                      <Avatar size="md">
+                        <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
+                        <AvatarImage alt={alt} source={source}/>
+                      </Avatar>
+                      <VStack>
+                        <Heading>{chatData.username}</Heading>
+                        <Text>{chatData.state}</Text>
+                      </VStack>
+                    </HStack>
+                  </Pressable>
                 )
               })}
             </VStack>

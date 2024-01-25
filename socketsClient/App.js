@@ -67,14 +67,15 @@ export default function App() {
                 headerShown: false
               }}
             />
+            <Stack.Screen
+              name='Messaging'
+              component={Messaging}
+              options={{
+                headerShown: false
+              }}
+            />
           </Stack.Navigator>
           )}
-          {/*
-          <Stack.Screen
-            name='Messaging'
-            component={Messaging}
-          />
-          */}
       </NavigationContainer>
       <StatusBar style="dark" />
     </GluestackUIProvider>
