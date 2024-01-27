@@ -36,12 +36,30 @@ const chats = [
   {
     username: "Yael",
     avatar: "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
-    state: "Quiero pene"
+    state: [
+      {
+        text: "Quiero pene ",
+        date: new Date(2024, 0, 24, 17, 58, 57, null).toLocaleString(),
+      }, 
+      {
+        text: "wwwwwwwwwwwwwwwww",
+        date: new Date(2024, 0, 24, 17, 59, 45, null).toLocaleString(),
+      }
+    ]
   },
   {
     username: "Luki",
     avatar: "", //"https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
-    state: "Yo más AAAAAAAAA"
+    state: [
+      {
+        text: "Yo más AAAAAAAAA",
+        date: new Date(2024, 0, 25, 19, 9).toISOString(),
+      },
+      {
+        text: "Sexoooooo",
+        date: new Date(2024, 0, 25, 19, 10).toISOString(),
+      }
+    ]
   }
 ];
 
@@ -104,7 +122,7 @@ const Chat = ({ navigation }) => {
                       </Avatar>
                       <VStack>
                         <Heading>{chatData.username}</Heading>
-                        <Text>{chatData.state}</Text>
+                        <Text>{chatData.state[1].text}</Text>
                       </VStack>
                     </HStack>
                   </Pressable>

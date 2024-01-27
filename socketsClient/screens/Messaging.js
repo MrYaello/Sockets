@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { SafeAreaView, View, StyleSheet } from "react-native";
+import { SafeAreaView, View, StyleSheet, Image } from "react-native";
 import { 
     ScrollView, 
     Text, 
@@ -23,38 +23,19 @@ import {
     AlertDialogContent,
     AlertDialogHeader,
     AlertDialogBody,
-    AlertDialogFooter
+    AlertDialogFooter,
+    Input,
+    InputField,
 } from "@gluestack-ui/themed";
-import { ChevronLeftIcon, CircleIcon, MenuIcon, CheckCircleIcon } from "@gluestack-ui/themed";
+import { ChevronLeftIcon, CircleIcon, MenuIcon, CheckCircleIcon, GripVerticalIcon} from "@gluestack-ui/themed";
+import { Camera, Zap } from "lucide-react-native";
 
-
-const messages = [
-    {
-        user: "Yael",
-        messages: [
-            "Qué onda weee, qué pedo!",
-            "Hola soy Yaelooo",
-            "Xdxdxdxd",
-        ],
-        hour: "10:35:47",
-        date: "22/1/24",
-    },
-    {
-        user: "Luki",
-        messages: [
-            "Hola soy Lukiii",
-            "Holaholaholahola",
-            "Xdddddddddddd",
-        ],
-        hour: "14:07:06",
-        date: "22/1/24",
-    }
-]
 
 const Messaging = ({ route, navigation }) => {
     const { usr, st, avtr } = route.params;
     const username = JSON.stringify(usr).replace(/^"(.*)"$/, '$1');
-    const state = JSON.stringify(st).replace(/^"(.*)"$/, '$1');
+    const ste = JSON.stringify(st);
+    const state = JSON.parse(ste);
     const avatar = JSON.stringify(avtr).replace(/^"(.*)"$/, '$1');
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const textRef = useRef(null);
@@ -73,22 +54,23 @@ const Messaging = ({ route, navigation }) => {
         ["uri"]: avatar, 
     };
 
-    const aLength = 7.8125;
+    const aLowercaseLength = 20; // 19 w's
+    
 
     useLayoutEffect(() => {
-        if (state.length <= 32) {
-            newWidth = state.length * aLength + 10;
-            newHeight = bubbleDimensions.height;
-            setBubbleDimensions({ width: newWidth, height: newHeight});
-            console.log("State Length: ", state.length);
-            console.log('Text Width:', newWidth);
-            console.log('Text Height:', newHeight);
-        }
-    }, [state]);
+        state.forEach(message => {
+            if (message.text.length <= 32) {
+                const resultWidth = message.text.length * aLowercaseLength + 30;
+                const newWidth = resultWidth <= 250 ? resultWidth : 250;
+                const newHeight = bubbleDimensions.height;
+                //setBubbleDimensions({ width: newWidth, height: newHeight });
+            }
+        });
+    }, []);
 
     return (
         <SafeAreaView>
-            <Box>
+            <Box style={styles.headingBox}>
                 <HStack style={{alignItems: "center", paddingTop: 10,}} >
                     <Button 
                         size="xs" 
@@ -154,14 +136,44 @@ const Messaging = ({ route, navigation }) => {
                     </AlertDialog>
                 </HStack>
             </Box>
-            <Box>
-                <View style={[styles.talkBubble, {width: bubbleDimensions.width, height: bubbleDimensions.height }]}>
-                    <View style={styles.talkBubbleSquare} >
-                        <Text onLayout={() => {}} style={styles.text}>{state}</Text>
-
+            <Box style={styles.messageBox}>
+                {(state.length > 0) ? (
+                    <ScrollView>
+                        {state.map((message) => {
+                            return (
+                                <VStack space="xs" alignItems="flex-start" key={message.date} >
+                                    <View style={[styles.talkBubble, {width: bubbleDimensions.width, height: bubbleDimensions.height }]}>
+                                        <View style={styles.talkBubbleSquare} >
+                                            <Text onLayout={() => {}} style={styles.text}>{message.text}</Text>
+                                        </View>
+                                        <View style={styles.talkBubbleTriangle} />
+                                    </View>
+                                </VStack>
+                            );
+                        })}
+                    </ScrollView>
+                ) : (
+                    <Text>Click the icon to start a new Chat!</Text>
+                )}
+            </Box>
+            <Box style={styles.actionBox}>
+                <HStack style={{marginTop: 10}}>
+                    <Button backgroundColor="transparent" style={{marginRight: -10}}>
+                        <ButtonIcon as={GripVerticalIcon} size="2xl" color="white" />
+                    </Button>
+                    <View style={styles.inputBox}>
+                        <Input size="md" variant="rounded" borderColor="transparent">
+                            <InputField placeholder="Enter text here..." placeholderTextColor="white" />
+                        </Input>
                     </View>
-                    <View style={styles.talkBubbleTriangle} />
-                </View>
+                    <Button backgroundColor="transparent" >
+                        <Camera color="white" size={30} strokeWidth={1.5}/>
+                    </Button>
+                    <Button backgroundColor="transparent" style={{paddingLeft: 5}}>
+                        <Zap color="white" size={30} strokeWidth={1.5} />
+                    </Button>
+
+                </HStack>
             </Box>
         </SafeAreaView>
     );
@@ -171,7 +183,7 @@ const styles = StyleSheet.create({
     talkBubble: {
         backgroundColor: "transparent",
         marginLeft: 30,
-        marginTop: 20,
+        marginBottom: -35,
     },
     talkBubbleSquare: {
         backgroundColor: "rgba(79, 70, 245, .8)",
@@ -194,6 +206,22 @@ const styles = StyleSheet.create({
         borderRightColor: "rgba(79, 70, 245, .8)",
         borderBottomWidth: 12,
         borderBottomColor: "transparent",
+    },
+    headingBox: {
+        marginBottom: 20
+    },
+    messageBox: {
+        minHeight: "78%",
+        verticalAlign: "top"
+    },
+    actionBox: {
+        height: "22%",
+        backgroundColor: "rgba(55, 40, 160, 1)",
+    },
+    inputBox: {
+        width: "55%",
+        backgroundColor: "rgba(109, 105, 255, .9)",
+        borderRadius: 20,
     },
 });
 
