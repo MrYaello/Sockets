@@ -19,6 +19,7 @@ import {
   LockIcon} from "@gluestack-ui/themed";
 import { SafeAreaView, Image, Keyboard } from "react-native";
 import socket from "../assets/utils/socket.js";
+import sha256 from "sha256";
 import styles from "../assets/utils/styles.js";
 
 const sendMail = (code, email) => {
@@ -146,8 +147,8 @@ const Register = ({ navigation }) => {
               defaultValue="" 
               placeholder="Where should we call you?"
               onChangeText={(value) => {
-                setUsername(value);
-                setMessageUsername("");
+                setPhonenumber(value);
+                setMessagePhonenumber("");
               }}  
             />
           </Input>
@@ -213,11 +214,13 @@ const Register = ({ navigation }) => {
             <FormControlErrorText></FormControlErrorText>
           </FormControlError>
         </FormControl>
-        <FormControl mt="$2">
+        <FormControl 
+          mt="$2"
+        >
           <Button 
             flexDirection="row"
             justifyContent="space-between"
-            
+            isDisabled={!emailVerified}
           >
             <ButtonText 
               fontSize="$sm" 

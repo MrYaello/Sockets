@@ -19,6 +19,7 @@ import {
 import { SafeAreaView, Image } from "react-native";
 import socket from "../assets/utils/socket.js";
 import styles from "../assets/utils/styles.js";
+import sha256 from "sha256";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Temporal, estaría bien migrar a SQLite
 
 const store = async (key, value) => {
@@ -45,7 +46,7 @@ const Login = ({ navigation }) => {
         if (response.length == 0) {
           setMessageUsername("Credentials not registered.");
         } else {
-          socket.emit("login", safeUsername, password.trim());
+          socket.emit("login", safeUsername, sha256(password.trim()));
           socket.off("login").on("login", (auth) => {
             if (auth.length == 0) {
               setMessagePassword("Invalid password.");
