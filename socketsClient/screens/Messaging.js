@@ -30,6 +30,19 @@ import {
 import { ChevronLeftIcon, CircleIcon, MenuIcon, CheckCircleIcon, GripVerticalIcon} from "@gluestack-ui/themed";
 import { Camera, Zap } from "lucide-react-native";
 
+const myMessages= [
+    {
+        text: "ME LA PONES COMO PATA DE PERRO",
+        date: new Date(2024, 0, 27, 12, 31, 5, null).toLocaleString(),
+        user: "César"
+    },
+    {
+        text: "JE JE JE JE BIEN CHUECOTA TE PARTO EL EJE",
+        date: new Date(2024, 0, 27, 12, 31, 59, null).toLocaleString(),
+        user: "César",
+    }
+]
+
 
 const Messaging = ({ route, navigation }) => {
     const { usr, st, avtr } = route.params;
@@ -39,6 +52,8 @@ const Messaging = ({ route, navigation }) => {
     const avatar = JSON.stringify(avtr).replace(/^"(.*)"$/, '$1');
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const textRef = useRef(null);
+    const [combinedArray, setCombinedArray] = useState([]);
+    const [placeholderIsSelected, setPlaceholderIsSelected] = useState(false);
 
     const [bubbleDimensions, setBubbleDimensions] = useState({
         width: 250,
@@ -66,6 +81,16 @@ const Messaging = ({ route, navigation }) => {
                 //setBubbleDimensions({ width: newWidth, height: newHeight });
             }
         });
+    }, []);
+
+    useEffect(() => {
+        const merged = [...state, ...myMessages].sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateA - dateB;
+        });
+        
+        setCombinedArray(merged);
     }, []);
 
     return (
@@ -137,20 +162,30 @@ const Messaging = ({ route, navigation }) => {
                 </HStack>
             </Box>
             <Box style={styles.messageBox}>
-                {(state.length > 0) ? (
+                {(combinedArray.length > 0) ? (
                     <ScrollView>
-                        {state.map((message) => {
+                        {combinedArray.map((message) => {
                             return (
                                 <VStack space="xs" alignItems="flex-start" key={message.date} >
-                                    <View style={[styles.talkBubble, {width: bubbleDimensions.width, height: bubbleDimensions.height }]}>
-                                        <View style={styles.talkBubbleSquare} >
+                                    {(message.user === "César") ? (
+                                        
+                                    <View style={[styles.rightTalkBubble, {width: bubbleDimensions.width, height: bubbleDimensions.height, marginBottom: -13 }]}>
+                                        <View style={styles.rightTalkBubbleSquare}>
                                             <Text onLayout={() => {}} style={styles.text}>{message.text}</Text>
                                         </View>
-                                        <View style={styles.talkBubbleTriangle} />
+                                        <View style={styles.rightTalkBubbleTriangle} />
                                     </View>
+                                    ) : (
+                                    <View style={[styles.leftTalkBubble, {width: bubbleDimensions.width, height: bubbleDimensions.height }]}>
+                                        <View style={styles.leftTalkBubbleSquare} >
+                                            <Text onLayout={() => {}} style={styles.text}>{message.text}</Text>
+                                        </View>
+                                        <View style={styles.leftTalkBubbleTriangle} />
+                                    </View>)}
                                 </VStack>
                             );
                         })}
+
                     </ScrollView>
                 ) : (
                     <Text>Click the icon to start a new Chat!</Text>
@@ -163,7 +198,13 @@ const Messaging = ({ route, navigation }) => {
                     </Button>
                     <View style={styles.inputBox}>
                         <Input size="md" variant="rounded" borderColor="transparent">
-                            <InputField placeholder="Enter text here..." placeholderTextColor="white" />
+                            <InputField 
+                                placeholder= {placeholderIsSelected ? "" : "Enter text here..."} 
+                                placeholderTextColor="white" 
+                                onFocus={() => setPlaceholderIsSelected(true)} 
+                                onBlur={() => setPlaceholderIsSelected(false)} 
+                                color="white"
+                            />
                         </Input>
                     </View>
                     <Button backgroundColor="transparent" >
@@ -180,31 +221,58 @@ const Messaging = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    talkBubble: {
+    rightTalkBubble: {
         backgroundColor: "transparent",
-        marginLeft: 30,
+        alignSelf: "flex-end",
+        marginRight: 30,
         marginBottom: -35,
     },
-    talkBubbleSquare: {
-        backgroundColor: "rgba(79, 70, 245, .8)",
+    rightTalkBubbleSquare: {
+        backgroundColor: "rgba(0,0,0,.5)",
         borderRadius: 20,
-        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
         padding: 10,
     },
     text: {
         color: "white"
     },
-    talkBubbleTriangle: {
+    rightTalkBubbleTriangle: {
+        alignSelf: "flex-end",
+        position: "relative",
+        left: 10,
+        top: -64,
+        width: 0,
+        height: 0,
+        borderTopColor: "transparent",
+        borderTopWidth: 0,
+        borderRightWidth: 10,
+        borderRightColor: "rgba(0,0,0,.5)",
+        borderBottomWidth: 10,
+        borderBottomColor: "transparent",
+        transform: [{ rotate: "-90deg" }]
+    },
+    leftTalkBubble: {
+        backgroundColor: "transparent",
+        marginLeft: 30,
+        marginBottom: -35,
+    },
+    leftTalkBubbleSquare: {
+        backgroundColor: "rgba(79, 70, 245, .8)",
+        borderRadius: 20,
+        borderTopLeftRadius: 0,
+        padding: 10,
+    },
+    leftTalkBubbleTriangle: {
         position: "absolute",
-        left: -12,
+        left: -10,
         top: 0,
         width: 0,
         height: 0,
         borderTopColor: "transparent",
         borderTopWidth: 0,
-        borderRightWidth: 12,
+        borderRightWidth: 10,
         borderRightColor: "rgba(79, 70, 245, .8)",
-        borderBottomWidth: 12,
+        borderBottomWidth: 10,
         borderBottomColor: "transparent",
     },
     headingBox: {
