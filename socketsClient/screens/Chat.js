@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { SafeAreaView, Platform } from "react-native";
+import { SafeAreaView, Platform, Pressable } from "react-native";
 import styles from "../assets/utils/styles.js";
 import Modal from "../component/ModalGroup.js";
 import ChatMenu from "../component/ChatMenu.js";
@@ -32,15 +32,53 @@ const getStore = async (key, setter) => {
   }
 };
 
+const chats = [
+  {
+    username: "Yael",
+    avatar: "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
+    state: [
+      {
+        text: "SÍ O NOOOO ",
+        date: new Date(2024, 0, 24, 17, 58, 57, null).toLocaleString(),
+        user: "Yael",
+      }, 
+      {
+        text: "O Q ROLLITO PRIMAVERAAAA",
+        date: new Date(2024, 0, 24, 17, 59, 45, null).toLocaleString(),
+        user: "Yael",
+      }
+    ]
+  },
+  {
+    username: "Luki",
+    avatar: "", //"https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
+    state: [
+      {
+        text: "QUÉ BONITOS OJOS TIENES",
+        date: new Date(2024, 0, 25, 19, 9, null).toLocaleString(),
+        user: "Luki",
+      },
+      {
+        text: "...",
+        date: new Date(2024, 0, 25, 19, 10, null).toLocaleString(),
+        user: "Luki",
+      }
+    ]
+  }
+];
+
 const Chat = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
-  const [visibleModalLogOut, setVisibleModalLogOut] = useState(false)
+  const [visibleModalLogOut, setVisibleModalLogOut] = useState(false);
+  
   useLayoutEffect(() => {
-    getStore("username", setUsername);
+    /*getStore("username", setUsername);
     socket.emit("requestUsers", false);
-    socket.on("requestUsers", (response) => setData(response));
+    socket.on("requestUsers", (response) => setData(response));*/
+    setUsername("César Villegas");
+    setData(chats);
   }, []);
 
   useEffect(() => {
@@ -73,16 +111,26 @@ const Chat = ({ navigation }) => {
                 }
                 let alt = chatData.username + " Avatar"
                 return (
-                  <HStack space="sm" alignItems="center" key={chatData.index}>
-                    <Avatar size="md">
-                      <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
-                      <AvatarImage alt={alt} source={source}/>
-                    </Avatar>
-                    <VStack>
-                      <Heading>{chatData.username}</Heading>
-                      <Text>{chatData.state}</Text>
-                    </VStack>
-                  </HStack>
+                  <Pressable 
+                    onPress={() => {
+                      navigation.navigate("Messaging", {
+                        usr: chatData.username,
+                        st: chatData.state,
+                        avtr: chatData.avatar
+                      });
+                    }}
+                  >
+                    <HStack space="sm" alignItems="center" key={chatData.index}>
+                      <Avatar size="md">
+                        <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
+                        <AvatarImage alt={alt} source={source}/>
+                      </Avatar>
+                      <VStack>
+                        <Heading>{chatData.username}</Heading>
+                        <Text>{chatData.state[1].text}</Text>
+                      </VStack>
+                    </HStack>
+                  </Pressable>
                 )
               })}
             </VStack>
@@ -94,6 +142,7 @@ const Chat = ({ navigation }) => {
         <Fab 
           bg="$primary600" size="lg" 
           onPress={() => {setVisible(true)}}
+          style={Platform.OS === "ios" && {marginBottom: 30}}
           >
           <FabIcon as={EditIcon} /> 
         </Fab>
