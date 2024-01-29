@@ -74,11 +74,9 @@ const Chat = ({ navigation }) => {
   const [visibleModalLogOut, setVisibleModalLogOut] = useState(false);
   
   useLayoutEffect(() => {
-    /*getStore("username", setUsername);
+    getStore("username", setUsername);
     socket.emit("requestUsers", false);
-    socket.on("requestUsers", (response) => setData(response));*/
-    setUsername("César Villegas");
-    setData(chats);
+    socket.on("requestUsers", (response) => setData(response));
   }, []);
 
   useEffect(() => {
@@ -127,7 +125,7 @@ const Chat = ({ navigation }) => {
                       </Avatar>
                       <VStack>
                         <Heading>{chatData.username}</Heading>
-                        <Text>{chatData.state[1].text}</Text>
+                        <Text>{chatData.state}</Text>
                       </VStack>
                     </HStack>
                   </Pressable>
