@@ -14,9 +14,12 @@ import {
   ButtonText,
   Button,
   ButtonIcon, 
+  Text,
   LockIcon} from "@gluestack-ui/themed";
-import { SafeAreaView, Text } from "react-native";
+import { SafeAreaView, Image } from "react-native";
 import socket from "../assets/utils/socket.js";
+import styles from "../assets/utils/styles.js";
+import sha256 from "sha256";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Temporal, estaría bien migrar a SQLite
 
 const store = async (key, value) => {
@@ -43,7 +46,7 @@ const Login = ({ navigation }) => {
         if (response.length == 0) {
           setMessageUsername("Credentials not registered.");
         } else {
-          socket.emit("login", safeUsername, password.trim());
+          socket.emit("login", safeUsername, sha256(password.trim()));
           socket.off("login").on("login", (auth) => {
             if (auth.length == 0) {
               setMessagePassword("Invalid password.");
@@ -59,20 +62,35 @@ const Login = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{
-      flex: 1,
-      backgroundColor: "#EEF1FF",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 12,
-      width: "100%",
-    }}>
-      <Box 
-        h="$32"
-        w="$72"
-      >
+        justifyContent: "center",
+        flex: 1,
+        backgroundColor: "#EEF1FF",
+        alignItems: "center",
+        padding: 12,
+        width: "100%",
+      }}>
+      <Box style={{
+        position: "absolute",
+        flex: 1,
+        height: "85%",
+        justifyContent: "flex-start"
+      }}>
+        <Image
+        alt= "YLCode Logo"
+        source={{
+          uri: "http://ylcode.online:4000/uploads/textlogo512.png"
+        }}
+        style={{
+          height: 50,
+          width: 100
+        }}
+        />
+      </Box>
+      <Box width="80%">
         <Text style={{
           alignSelf: "center",
           fontSize: 26,
+          paddingTop: 10,
           marginBottom: 10,
         }}>Sign in </Text>
         <FormControl
@@ -100,6 +118,7 @@ const Login = ({ navigation }) => {
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
             <FormControlErrorText>{messageUsername}</FormControlErrorText>
+            {messageUsername=="Credentials not registered." ? <Button variant="link" style={{height: 22}} onPress={() => navigation.navigate("Register")}><ButtonText>Register?</ButtonText></Button> : ""}
           </FormControlError>
         </FormControl>
 
@@ -128,7 +147,7 @@ const Login = ({ navigation }) => {
           
           <FormControlError>
             <FormControlErrorIcon as={LockIcon}/>
-            <FormControlErrorText>{messagePassword}</FormControlErrorText>
+            <FormControlErrorText>{messagePassword}</FormControlErrorText>{messagePassword=="Invalid password." ? <Button variant="link" style={{height: 22}}><ButtonText>Forgot?</ButtonText></Button> : ""}
           </FormControlError>
         </FormControl>
         <FormControl mt="$2">
@@ -140,7 +159,7 @@ const Login = ({ navigation }) => {
             <ButtonText 
               fontSize="$sm" 
               fontWeight="$medium">
-              Get Started
+              Ready to go
             </ButtonText>
             <ButtonIcon as={ArrowRightIcon}/>
           </Button>

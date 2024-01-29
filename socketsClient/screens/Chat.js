@@ -3,7 +3,7 @@ import { SafeAreaView, Platform, Pressable } from "react-native";
 import styles from "../assets/utils/styles.js";
 import Modal from "../component/ModalGroup.js";
 import ChatMenu from "../component/ChatMenu.js";
-import Messaging from "./Messaging.js";
+import ModalLogOut from "../component/ModalLogOut.js";
 import { 
   Box,
   VStack,
@@ -71,7 +71,8 @@ const Chat = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
-
+  const [visibleModalLogOut, setVisibleModalLogOut] = useState(false);
+  
   useLayoutEffect(() => {
     /*getStore("username", setUsername);
     socket.emit("requestUsers", false);
@@ -91,7 +92,7 @@ const Chat = ({ navigation }) => {
           <Heading style={Platform.OS === "ios" && {marginTop: 10, paddingBottom:30}}>
             {username}
           </Heading>
-          <ChatMenu username={username}/>
+          <ChatMenu username={username} setVisibleModalLogOut={setVisibleModalLogOut}/>
         </HStack>
       </Box>
       <Box
@@ -147,6 +148,7 @@ const Chat = ({ navigation }) => {
         </Fab>
       </Box>
       {visible ? <Modal setVisible={setVisible}/> : ""}
+      {visibleModalLogOut ? <ModalLogOut setVisible={setVisibleModalLogOut} navigation={navigation}/> : ""}
     </SafeAreaView>
   )
 } 

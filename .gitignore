@@ -3,3 +3,4 @@
 /socketsServer/node_modules/*
 /socketsServer/credentialsSMTP.js
 /socketsServer/credentialsSQL.js
+/socketsServer/uploads/*

@@ -17,10 +17,16 @@ CREATE TABLE message (
   message_id int NOT NULL AUTO_INCREMENT,
   sender_id int NOT NULL,
   recipient_id int NOT NULL, -- Se deberia eliminar para crear otra tabla con los mensajes para habilitar grupos.
-  postDate DATETIME NOT NULL,
+  postDate DATETIME DEFAULT CURRENT_TIMESTAMP,
   content TEXT DEFAULT NULL,
   PRIMARY KEY (message_id),
   FOREIGN KEY (sender_id) REFERENCES user(user_id),
   FOREIGN KEY (recipient_id) REFERENCES user(user_id)
 );
+
+CREATE TABLE verification (
+  email varchar(255) DEFAULT NULL,
+  code varchar(6) DEFAULT NULL,
+  created DATETIME DEFAULT CURRENT_TIMESTAMP
+)
 

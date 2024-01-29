@@ -4,6 +4,7 @@ import Login from "./screens/Login";
 import Messaging from "./screens/Messaging";
 import Chat from "./screens/Chat";
 import Register from './screens/Register';
+import Welcome from './screens/Welcome';
 
 import { config } from './config/gluestack-ui.config';
 import { NavigationContainer } from '@react-navigation/native';
@@ -39,6 +40,22 @@ export default function App() {
         {(username == "") 
         ? (
           <Stack.Navigator>
+            <Stack.Screen
+            name='Welcome'
+            component={Welcome}
+            options={{
+              headerShown: false
+            }}
+            />
+
+            <Stack.Screen
+            name='Register'
+            component={Register}
+            options={{
+              headerShown: false
+            }}
+            />
+
             <Stack.Screen
             name='Login'
             component={Login}
