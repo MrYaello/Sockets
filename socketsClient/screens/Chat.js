@@ -21,17 +21,6 @@ import {
 import socket from "../assets/utils/socket.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const getStore = async (key, setter) => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      setter(value);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 const chats = [
   {
     username: "Yael",
@@ -69,16 +58,39 @@ const chats = [
 
 const Chat = ({ navigation }) => {
   const [username, setUsername] = useState("");
+  const [id, setId] = useState("");
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   const [visibleModalLogOut, setVisibleModalLogOut] = useState(false);
+
+  const getUsername = async () => {
+    try {
+      const value = await AsyncStorage.getItem("username");
+      if (value !== null) {
+        setUsername(value);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const getId = async () => {
+    try {
+      const value = await AsyncStorage.getItem("id");
+      if (value !== null) {
+        setId(value);
+        socket.emit("identify", id);
+        socket.emit("requestUsers", false, value);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
   
   useLayoutEffect(() => {
-    /*getStore("username", setUsername);
-    socket.emit("requestUsers", false);
-    socket.on("requestUsers", (response) => setData(response));*/
-    setUsername("César Villegas");
-    setData(chats);
+    getUsername();
+    getId();
+    socket.on("requestUsers", (response) => setData(response));
   }, []);
 
   useEffect(() => {
@@ -111,7 +123,8 @@ const Chat = ({ navigation }) => {
                 }
                 let alt = chatData.username + " Avatar"
                 return (
-                  <Pressable 
+                  <Pressable
+                    key={chatData.index}
                     onPress={() => {
                       navigation.navigate("Messaging", {
                         usr: chatData.username,
@@ -120,14 +133,14 @@ const Chat = ({ navigation }) => {
                       });
                     }}
                   >
-                    <HStack space="sm" alignItems="center" key={chatData.index}>
+                    <HStack space="sm" alignItems="center">
                       <Avatar size="md">
                         <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
                         <AvatarImage alt={alt} source={source}/>
                       </Avatar>
                       <VStack>
                         <Heading>{chatData.username}</Heading>
-                        <Text>{chatData.state[1].text}</Text>
+                        <Text>{chatData.state}</Text>
                       </VStack>
                     </HStack>
                   </Pressable>

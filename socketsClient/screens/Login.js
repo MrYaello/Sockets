@@ -11,6 +11,7 @@ import {
   FormControlErrorIcon, 
   AlertCircleIcon,
   ArrowRightIcon, 
+  ArrowLeftIcon,
   ButtonText,
   Button,
   ButtonIcon, 
@@ -52,6 +53,7 @@ const Login = ({ navigation }) => {
               setMessagePassword("Invalid password.");
             } else {
               store("username", auth[0].username);
+              store("id", String(auth[0].index));
               navigation.navigate("Chat");
             }
           });
@@ -164,6 +166,14 @@ const Login = ({ navigation }) => {
             <ButtonIcon as={ArrowRightIcon}/>
           </Button>
         </FormControl>
+        <Box flexDirection="row" pt="$1">
+          <Button variant="link" p="$0" size="sm" onPress={() => {
+            navigation.navigate("Welcome")
+          }}>
+            <ButtonIcon size="md" mr="$1" as={ArrowLeftIcon} />
+            <ButtonText>Back to main</ButtonText>
+          </Button>
+        </Box>
       </Box>
     </SafeAreaView>
   )

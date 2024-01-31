@@ -59,16 +59,17 @@ app.get('/', (req, res) => {
 io.on("connection", (socket) => {
   let user_id;
   console.log(`[+]: ${socket.id} user connected.`);
+  sql.query("SELECT user_id AS \"index\", username, avatar, state FROM user WHERE user_id!=?", [user_id], (err, result) => {
+    if (err) console.log(err);
+    socket.emit("requestUsers", result);
+  });
 
-  socket.on("requestUsers", (online) => {
-    if (online) {
-      //Implementar
-    } else {
-      sql.query("SELECT user_id AS \"index\", username, avatar, state FROM user", (err, result) => {
-        if (err) console.log(err);
-        socket.emit("requestUsers", result);
-      });
-    }
+  socket.on("requestUsers", (online, id) => {
+    let query = "SELECT user_id AS \"index\", username, avatar, state FROM user WHERE user_id!=?";
+    sql.query(query, [id], (err, result) => {
+      if (err) console.log(err);
+      socket.emit("requestUsers", result);
+    });
   });
 
   socket.on("validateUsername", (auth) => {
@@ -80,7 +81,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("login", (username, password) => {
-    let query = "SELECT username FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
+    let query = "SELECT username, user_id AS \"index\" FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
     sql.query(query, [username, password, username, password, username, password], (err, result) => {
       if (err) console.log(err);
       socket.emit("login", result);
@@ -108,7 +109,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("sendVerificationEmail", (code, email) => {
+  socket.on("sendVerificationEmail", (email) => {
     sendMail(code, email);
   });
 
