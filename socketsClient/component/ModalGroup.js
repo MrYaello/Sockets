@@ -23,7 +23,7 @@ export default ({setVisible}) => (
         variant="outline"
         size="md"
         >
-        <InputField placeholder="Type Group Chat Name"/>
+        <InputField placeholder="Type group chat name..."/>
       </Input>
       </ModalBody>
       <ModalFooter>

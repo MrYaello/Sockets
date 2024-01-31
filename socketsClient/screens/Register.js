@@ -10,7 +10,8 @@ import {
   FormControlErrorText, 
   FormControlErrorIcon, 
   AlertCircleIcon,
-  ArrowRightIcon, 
+  ArrowRightIcon,
+  ArrowLeftIcon, 
   ButtonText,
   Button,
   ButtonIcon,
@@ -230,6 +231,14 @@ const Register = ({ navigation }) => {
             <ButtonIcon as={ArrowRightIcon}/>
           </Button>
         </FormControl>
+        <Box flexDirection="row" pt="$1">
+          <Button variant="link" p="$0" size="sm" onPress={() => {
+            navigation.navigate("Welcome")
+          }}>
+            <ButtonIcon size="md" mr="$1" as={ArrowLeftIcon} />
+            <ButtonText>Back to main</ButtonText>
+          </Button>
+        </Box>
       </Box>
     </SafeAreaView>
   )

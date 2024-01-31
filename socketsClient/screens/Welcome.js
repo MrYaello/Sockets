@@ -9,9 +9,11 @@ import {
   Box
   } from "@gluestack-ui/themed";
 import { Pressable, SafeAreaView } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import socket from "../assets/utils/socket.js";
 
 const Welcome = ({ navigation }) => {
+  const [username, setUsername] = useState("");
 
   const goToLogin = () => {
     navigation.navigate("Login");
@@ -20,6 +22,22 @@ const Welcome = ({ navigation }) => {
   const goToRegister = () => {
     navigation.navigate("Register");
   }
+  
+  const getUsername = async () => {
+    try {
+      const value = await AsyncStorage.getItem("username");
+      if (value !== null) {
+        setUsername(value);
+        navigation.navigate("Chat");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useLayoutEffect(() => {
+    getUsername();
+  }, []);
 
   return (
     <SafeAreaView style={{
