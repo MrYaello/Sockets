@@ -11,6 +11,7 @@ import {
   FormControlErrorIcon, 
   AlertCircleIcon,
   ArrowRightIcon, 
+  ArrowLeftIcon,
   ButtonText,
   Button,
   ButtonIcon, 
@@ -19,6 +20,7 @@ import {
 import { SafeAreaView, Image } from "react-native";
 import socket from "../assets/utils/socket.js";
 import styles from "../assets/utils/styles.js";
+import sha256 from "sha256";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Temporal, estaría bien migrar a SQLite
 
 const store = async (key, value) => {
@@ -37,20 +39,21 @@ const Login = ({ navigation }) => {
 
   const handleSignIn = () => {
     var safeUsername = username.trim();
-    if (!password.trim()) setMessagePassword("Obligaroy field.");
-    if (!safeUsername) setMessageUsername("Obligaroy field.");
+    if (!password.trim()) setMessagePassword("Obligatory field.");
+    if (!safeUsername) setMessageUsername("Obligatory field.");
     else {
       socket.emit("validateUsername", safeUsername);
       socket.off("validateUsername").on("validateUsername", (response) => {
         if (response.length == 0) {
           setMessageUsername("Credentials not registered.");
         } else {
-          socket.emit("login", safeUsername, password.trim());
+          socket.emit("login", safeUsername, sha256(password.trim()));
           socket.off("login").on("login", (auth) => {
             if (auth.length == 0) {
               setMessagePassword("Invalid password.");
             } else {
               store("username", auth[0].username);
+              store("id", String(auth[0].index));
               navigation.navigate("Chat");
             }
           });
@@ -163,6 +166,14 @@ const Login = ({ navigation }) => {
             <ButtonIcon as={ArrowRightIcon}/>
           </Button>
         </FormControl>
+        <Box flexDirection="row" pt="$1">
+          <Button variant="link" p="$0" size="sm" onPress={() => {
+            navigation.navigate("Welcome")
+          }}>
+            <ButtonIcon size="md" mr="$1" as={ArrowLeftIcon} />
+            <ButtonText>Back to main</ButtonText>
+          </Button>
+        </Box>
       </Box>
     </SafeAreaView>
   )
