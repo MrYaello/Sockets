@@ -62,6 +62,12 @@ const Register = ({ navigation }) => {
     }
   }
 
+  const verifyEmail = () => {
+    var safeEmail = email.trim();
+    if (safeEmail) setMessageEmail("Obligatory field.");
+    if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(safeEmail))) setMessageEmail("Type a valid email.");
+  }
+
   return (
     <SafeAreaView style={{
         justifyContent: "center",
@@ -76,7 +82,7 @@ const Register = ({ navigation }) => {
         position: "absolute",
         flex: 1,
         height: "100%",
-        paddingTop: "27%",
+        paddingTop: "16%",
         justifyContent: "flex-start"
       }}>
         <Image
@@ -100,7 +106,7 @@ const Register = ({ navigation }) => {
         <FormControl
           size="lg"
           isDisabled={false}
-          isInvalid={false}
+          isInvalid={messageEmail}
           isReadOnly={false}
           isRequiered={true}
         >
@@ -120,7 +126,7 @@ const Register = ({ navigation }) => {
               }}  
             />
           </Input>
-          <Button width="28%" ml="4%" flexDirection="row" justifyContent="center">
+          <Button width="28%" ml="4%" flexDirection="row" justifyContent="center" onPress={verifyEmail}>
             <ButtonText>Verify</ButtonText>
             <ButtonIcon ml="$2" as={CheckIcon}/>
           </Button>
@@ -134,7 +140,7 @@ const Register = ({ navigation }) => {
         <FormControl
           size="lg"
           isDisabled={!emailVerified}
-          isInvalid={messageUsername}
+          isInvalid={messagePhonenumber}
           isReadOnly={false}
           isRequiered={true}
         >
@@ -155,7 +161,7 @@ const Register = ({ navigation }) => {
           </Input>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
-            <FormControlErrorText>{messageUsername}</FormControlErrorText>
+            <FormControlErrorText>{messagePhonenumber}</FormControlErrorText>
           </FormControlError>
         </FormControl>
 

@@ -1,10 +1,10 @@
--- Selecciona la tabla a usar, debe ser creada anteriormente.
 USE sockets;
--- Crea la tabla de usuarios con primary key auto incremental.
+
 CREATE TABLE user (
   user_id int NOT NULL AUTO_INCREMENT,
   username varchar(50) DEFAULT NULL,
   password TEXT DEFAULT NULL,
+  salt varchar(8) DEFAULT NULL,
   email varchar(255) DEFAULT NULL,
   phonenumber varchar(15) DEFAULT NULL,
   avatar varchar(255) DEFAULT "UNSET",
@@ -16,17 +16,33 @@ CREATE TABLE user (
 CREATE TABLE message (
   message_id int NOT NULL AUTO_INCREMENT,
   sender_id int NOT NULL,
-  recipient_id int NOT NULL, -- Se deberia eliminar para crear otra tabla con los mensajes para habilitar grupos.
+  recipient_id int NOT NULL, 
   postDate DATETIME DEFAULT CURRENT_TIMESTAMP,
   content TEXT DEFAULT NULL,
   PRIMARY KEY (message_id),
   FOREIGN KEY (sender_id) REFERENCES user(user_id),
-  FOREIGN KEY (recipient_id) REFERENCES user(user_id)
+  FOREIGN KEY (recipient_id) REFERENCES group(group_id)
+);
+
+CREATE TABLE group (
+  group_id int NOT NULL AUTO_INCREMENT,
+  name varchar(50) DEFAULT NULL,
+  isActive BOOLEAN DEFAULT TRUE,
+  PRIMARY KEY (group_id)
+);
+
+CREATE TABLE user_group (
+  member_id int NOT NULL AUTO_INCREMENT,
+  user_id int NOT NULL,
+  group_id int NOT NULL,
+  PRIMARY KEY (member_id),
+  FOREIGN KEY (user_id) REFERENCES user(user_id),
+  FOREIGN KEY (group_id) REFERENCES group(group_id)
 );
 
 CREATE TABLE verification (
   email varchar(255) DEFAULT NULL,
   code varchar(6) DEFAULT NULL,
   created DATETIME DEFAULT CURRENT_TIMESTAMP
-)
+);
 
