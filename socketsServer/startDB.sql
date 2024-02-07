@@ -46,3 +46,9 @@ CREATE TABLE verification (
   created DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE EVENT clearDeadCodes
+    ON SCHEDULE
+      EVERY 1 HOUR
+    DO
+      DELETE FROM sockets.verification WHERE DATE_SUB(CURDATE(), INTERVAL 30 MINUTE) >= created;
+
