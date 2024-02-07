@@ -13,6 +13,13 @@ CREATE TABLE user (
   PRIMARY KEY (user_id)
 );
 
+CREATE TABLE chatgroup (
+  group_id int NOT NULL AUTO_INCREMENT,
+  name varchar(50) DEFAULT NULL,
+  isActive BOOLEAN DEFAULT TRUE,
+  PRIMARY KEY (group_id)
+);
+
 CREATE TABLE message (
   message_id int NOT NULL AUTO_INCREMENT,
   sender_id int NOT NULL,
@@ -22,13 +29,6 @@ CREATE TABLE message (
   PRIMARY KEY (message_id),
   FOREIGN KEY (sender_id) REFERENCES user(user_id),
   FOREIGN KEY (recipient_id) REFERENCES chatgroup(group_id)
-);
-
-CREATE TABLE chatgroup (
-  group_id int NOT NULL AUTO_INCREMENT,
-  name varchar(50) DEFAULT NULL,
-  isActive BOOLEAN DEFAULT TRUE,
-  PRIMARY KEY (group_id)
 );
 
 CREATE TABLE user_chatgroup (
