@@ -21,23 +21,23 @@ CREATE TABLE message (
   content TEXT DEFAULT NULL,
   PRIMARY KEY (message_id),
   FOREIGN KEY (sender_id) REFERENCES user(user_id),
-  FOREIGN KEY (recipient_id) REFERENCES group(group_id)
+  FOREIGN KEY (recipient_id) REFERENCES chatgroup(group_id)
 );
 
-CREATE TABLE group (
+CREATE TABLE chatgroup (
   group_id int NOT NULL AUTO_INCREMENT,
   name varchar(50) DEFAULT NULL,
   isActive BOOLEAN DEFAULT TRUE,
   PRIMARY KEY (group_id)
 );
 
-CREATE TABLE user_group (
+CREATE TABLE user_chatgroup (
   member_id int NOT NULL AUTO_INCREMENT,
   user_id int NOT NULL,
   group_id int NOT NULL,
   PRIMARY KEY (member_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id),
-  FOREIGN KEY (group_id) REFERENCES group(group_id)
+  FOREIGN KEY (group_id) REFERENCES chatgroup(group_id)
 );
 
 CREATE TABLE verification (
