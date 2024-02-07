@@ -15,8 +15,8 @@ const ChatMenu = ({username, setVisibleModalLogOut}) => {
     const [showActionsheet, setShowActionsheet] = useState(false)
     const handleClose = () => setShowActionsheet(!showActionsheet)
     const handleLogOut = () => {
-        handleClose()
-        setVisibleModalLogOut(true)
+        handleClose();
+        setVisibleModalLogOut(true);
     }
         
     return (

@@ -20,6 +20,7 @@ import {
   LockIcon} from "@gluestack-ui/themed";
 import { SafeAreaView, Image, Keyboard } from "react-native";
 import socket from "../assets/utils/socket.js";
+import ModalVerification from "../component/ModalVerification.js";
 import sha256 from "sha256";
 import styles from "../assets/utils/styles.js";
 
@@ -37,6 +38,7 @@ const Register = ({ navigation }) => {
   const [messageUsername, setMessageUsername] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
   const [messagePhonenumber, setMessagePhonenumber] = useState("");
+  const [visibleModalVerify, setVisibleModalVerify] = useState(false);
   // ^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$ Regex Email
   const handleRegister = () => {
     var safeUsername = username.trim();
@@ -64,8 +66,11 @@ const Register = ({ navigation }) => {
 
   const verifyEmail = () => {
     var safeEmail = email.trim();
-    if (safeEmail) setMessageEmail("Obligatory field.");
-    if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(safeEmail))) setMessageEmail("Type a valid email.");
+    if (!safeEmail) setMessageEmail("Obligatory field.");
+    else if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(safeEmail))) setMessageEmail("Type a valid email.");
+    else {
+      setVisibleModalVerify(true);
+    }
   }
 
   return (
@@ -78,24 +83,6 @@ const Register = ({ navigation }) => {
         width: "100%",
         height: "100%"
       }}>
-      <Box style={{
-        position: "absolute",
-        flex: 1,
-        height: "100%",
-        paddingTop: "16%",
-        justifyContent: "flex-start"
-      }}>
-        <Image
-        alt= "YLCode Logo"
-        source={{
-          uri: "http://ylcode.online:4000/uploads/textlogo512.png"
-        }}
-        style={{
-          height: 50,
-          width: 100
-        }}
-        />
-      </Box>
       <Box width="80%">
         <Text style={{
           fontSize: 26,
@@ -105,16 +92,16 @@ const Register = ({ navigation }) => {
         }}>Register </Text>
         <FormControl
           size="lg"
-          isDisabled={false}
+          isDisabled={emailVerified}
           isInvalid={messageEmail}
           isReadOnly={false}
           isRequiered={true}
         >
           <FormControlLabel mb="$1">
-            <FormControlLabelText>Email</FormControlLabelText>
+            <FormControlLabelText color={emailVerified ? "$primary600" : "$black"}>{emailVerified ? "Email Verified" : "Email"}</FormControlLabelText>
           </FormControlLabel>
           <Box flexDirection="row">
-          <Input width="68%">
+          <Input width={emailVerified ? "100%" : "72%"}>
             <InputField 
               autoCorrect={false} 
               type="text" 
@@ -126,10 +113,11 @@ const Register = ({ navigation }) => {
               }}  
             />
           </Input>
-          <Button width="28%" ml="4%" flexDirection="row" justifyContent="center" onPress={verifyEmail}>
+          
+          {!emailVerified ? <Button width="27%" ml="1%" flexDirection="row" justifyContent="center" onPress={verifyEmail}>
             <ButtonText>Verify</ButtonText>
             <ButtonIcon ml="$2" as={CheckIcon}/>
-          </Button>
+          </Button> : "" }
           </Box>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
@@ -246,6 +234,23 @@ const Register = ({ navigation }) => {
           </Button>
         </Box>
       </Box>
+      <Box style={{
+        position: "absolute",
+        flex: 1,
+        height: "100%",
+        flexDirection: "column-reverse",
+        justifyContent: "flex-start"
+      }}>
+        <Image
+        alt= "YLCode Text Logo"
+        source={require('../assets/textlogo512.png')}
+        style={{
+          height: 50,
+          width: 100
+        }}
+        />
+      </Box>
+      {visibleModalVerify ? <ModalVerification setVisible={setVisibleModalVerify} email={email} setEmailVerified={setEmailVerified}/> : ""}
     </SafeAreaView>
   )
 }
