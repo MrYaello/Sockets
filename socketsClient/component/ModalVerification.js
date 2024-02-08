@@ -9,17 +9,36 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
+import socket from "../assets/utils/socket";
 
 const CODE_LENGTH = 4;
 
 const ModalVerification = ({setVisible, email, setEmailVerified}) => {
   const [value, setValue] = useState("");
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const ref = useBlurOnFulfill({value, cellCount: CODE_LENGTH});
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
+
+  const verifyEmail = () => {
+    if (value.length < 4) setError(true);
+    else {
+      socket.emit("verifyEmailCode", email);
+      socket.off("verifyEmailCode").on("verifyEmailCode", (result) => {
+        if (result == value) {
+          setEmailVerified(true);
+          setVisible(false);
+        } 
+        else { 
+          setError(true);
+          setErrorMessage("The code is invalid. Try Again.")
+        }
+      });
+    }
+  };
 
 return (
   <Modal
@@ -49,7 +68,11 @@ return (
         ref={ref}
         {...props}
         value={value}
-        onChangeText={setValue}
+        onChangeText={(value) => {
+          setValue(value);
+          setErrorMessage("");
+          setError(false);
+        }}  
         cellCount={CODE_LENGTH}
         rootStyle={style.codeFiledRoot}
         keyboardType="number-pad"
@@ -66,6 +89,12 @@ return (
         )}
       />
       </Box>
+      <Box style={{
+        flexDirection: "column",
+        alignItems: "center",
+      }}>
+        <Text color="$error400">{errorMessage}</Text>
+      </Box>
   </ModalBody>
   <ModalFooter>
     <Button
@@ -81,11 +110,7 @@ return (
     <Button
       size="sm"
       borderWidth="$0"
-      onPress={() => {
-        console.log(value);
-        setVisible(false);
-        setEmailVerified(true);
-      }}
+      onPress={verifyEmail}
     >
       <ButtonText>Verify Email</ButtonText>
       <ButtonIcon ml="$2" as={CheckIcon}/>

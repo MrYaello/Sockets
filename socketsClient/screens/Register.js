@@ -24,10 +24,7 @@ import ModalVerification from "../component/ModalVerification.js";
 import sha256 from "sha256";
 import styles from "../assets/utils/styles.js";
 
-const sendMail = (code, email) => {
-  socket.emit("sendVerificationEmail", code, email);
-}
-
+var buttonCooldown = "Verify";
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -38,8 +35,32 @@ const Register = ({ navigation }) => {
   const [messageUsername, setMessageUsername] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
   const [messagePhonenumber, setMessagePhonenumber] = useState("");
+  const cooldown = 60 * 0.5;
+  const [time, setTime] = useState(cooldown);
+  const [isActive, setIsActive] = useState(false);
   const [visibleModalVerify, setVisibleModalVerify] = useState(false);
   // ^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$ Regex Email
+
+  useEffect(() => {
+    let interval = null;
+    if (isActive) {
+      buttonCooldown = `${Math.floor(time / 60).toString().padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
+      interval = setInterval(() => {
+        setTime(time - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+
+    if (time === 0) {
+      setIsActive(false);
+      setTime(cooldown)
+      buttonCooldown = "Verify";
+    }
+
+    return () => clearInterval(interval);
+  }, [isActive, time]);
+
   const handleRegister = () => {
     var safeUsername = username.trim();
     if (!password.trim()) setMessagePassword("Obligaroy field.");
@@ -70,6 +91,8 @@ const Register = ({ navigation }) => {
     else if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(safeEmail))) setMessageEmail("Type a valid email.");
     else {
       setVisibleModalVerify(true);
+      setIsActive(true);
+      socket.emit("sendVerificationEmail", safeEmail);
     }
   }
 
@@ -114,8 +137,8 @@ const Register = ({ navigation }) => {
             />
           </Input>
           
-          {!emailVerified ? <Button width="27%" ml="1%" flexDirection="row" justifyContent="center" onPress={verifyEmail}>
-            <ButtonText>Verify</ButtonText>
+          {!emailVerified ? <Button width="27%" ml="1%" flexDirection="row" justifyContent="center" onPress={verifyEmail} isDisabled={isActive}>
+            <ButtonText>{buttonCooldown}</ButtonText>
             <ButtonIcon ml="$2" as={CheckIcon}/>
           </Button> : "" }
           </Box>
@@ -250,7 +273,7 @@ const Register = ({ navigation }) => {
         }}
         />
       </Box>
-      {visibleModalVerify ? <ModalVerification setVisible={setVisibleModalVerify} email={email} setEmailVerified={setEmailVerified}/> : ""}
+      {visibleModalVerify ? <ModalVerification setVisible={setVisibleModalVerify} email={email.trim()} setEmailVerified={setEmailVerified}/> : ""}
     </SafeAreaView>
   )
 }
