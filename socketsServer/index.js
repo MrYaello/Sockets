@@ -88,11 +88,10 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("register", (username, password, email, phonenumber) => {
-    let query = "INSERT INTO user (username, password, email, phonenumber) VALUES (?,?,?,?)";
-    sql.query(query, [username, password, email, phonenumber], (err, result) => {
+  socket.on("register", (username, salt, password, email, phonenumber) => {
+    let query = "INSERT INTO user (username, salt, password, email, phonenumber) VALUES (?,?,?,?,?)";
+    sql.query(query, [username, salt, password, email, phonenumber], (err, result) => {
       if (err) console.log(err);
-      socket.emit("register", result);
     });
   });
 
@@ -120,7 +119,7 @@ io.on("connection", (socket) => {
     sql.query(query, [email, code], (err, result) => {
       if (err) console.log(err);
     });
-    sendMail(code, email);
+    //sendMail(code, email);
   });
 
   socket.on("verifyEmailCode", (email) => {
