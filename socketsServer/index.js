@@ -121,6 +121,22 @@ io.on("connection", (socket) => {
     console.log(`[-]: ${socket.id} user disconnected.`)
     socket.disconnect();
   });
+
+  socket.on("sendMessage", (recipient_id, postDate, content) => {
+    let query = "INSERT INTO message VALUES (DEFAULT, ?, ?, ?, ?)";
+    sql.query(query, [user_id, recipient_id, postDate, content], (err, result) => {
+      if (err) console.log(err);
+      socket.emit("sendMessage", result);
+    });
+  });
+
+  socket.on("deployMessages", (sender_id) => {
+    let query = "SELECT * FROM message WHERE sender_id = ? OR recipient_id = ?";
+    sql.query(query, [sender_id], (err, result) => {
+      if (err) console.log(err);
+      socket.emit("deployMessages", result);
+    })
+  });
 });
 
 server.listen(PORT, () => {
