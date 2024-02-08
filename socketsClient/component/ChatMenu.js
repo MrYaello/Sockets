@@ -55,6 +55,8 @@ const styles = StyleSheet.create({
     menu: {
         marginTop: 15,
         borderRadius: 13,
+        maxWidth: 50,
+        marginLeft: 210
     }
 });
 

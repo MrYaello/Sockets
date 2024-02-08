@@ -104,7 +104,7 @@ const Chat = ({ navigation }) => {
           <Heading style={Platform.OS === "ios" && {marginTop: 10, paddingBottom:30}}>
             {username}
           </Heading>
-          <ChatMenu username={username} setVisibleModalLogOut={setVisibleModalLogOut}/>
+          <ChatMenu username={username} setVisibleModalLogOut={setVisibleModalLogOut} />
         </HStack>
       </Box>
       <Box
