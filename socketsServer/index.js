@@ -110,7 +110,30 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendVerificationEmail", (email) => {
+    let deletePrevious = "DELETE FROM verification WHERE email=?";
+    sql.query(deletePrevious, [email], (err, result) => {
+      if (err) console.log(err);
+    });
+
+    let code = Math.floor(Math.random() * (9999)).toString().padStart(4, "0");
+    let query = "INSERT INTO verification (email, code) VALUES (?, ?)"
+    sql.query(query, [email, code], (err, result) => {
+      if (err) console.log(err);
+    });
     sendMail(code, email);
+  });
+
+  socket.on("verifyEmailCode", (email) => {
+    let query = "SELECT code FROM verification WHERE DATE_SUB(CURDATE(), INTERVAL 30 MINUTE) <= created AND email=?";
+    sql.query(query, [email], (err, result) => {
+      if (err) console.log(err);
+      if (result.length > 0) {
+        const code = result[0].code;
+        socket.emit("verifyEmailCode", code);
+      } else {
+        socket.emit("verifyEmailCode", null);
+      }
+    });
   });
 
   socket.on("identify", (id) => {
