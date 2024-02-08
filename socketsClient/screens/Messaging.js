@@ -44,8 +44,6 @@ const myMessages= [
     }
 ]*/
 
-const sqlData = [];
-
 
 const Messaging = ({ route, navigation }) => {
     const[id, setId] = useState("");
@@ -92,8 +90,8 @@ const Messaging = ({ route, navigation }) => {
       };
     
 
-    useLayoutEffect(() => {
-        state.forEach(message => {
+    /*useLayoutEffect(() => {
+        /*state.forEach(message => {
             if (message.text.length <= 32) {
                 const resultWidth = message.text.length * aLowercaseLength + 30;
                 const newWidth = resultWidth <= 250 ? resultWidth : 250;
@@ -101,7 +99,7 @@ const Messaging = ({ route, navigation }) => {
                 //setBubbleDimensions({ width: newWidth, height: newHeight });
             }
         });
-    }, []);
+    }, []);*/
 
     useEffect(() => {
         getId();
@@ -110,21 +108,7 @@ const Messaging = ({ route, navigation }) => {
             if (response.length == 0) {
                 // Here it's supposed to deploy a text saying there're no messages.
             } else {
-                let i = 0;
-                response.forEach(message => {
-                    sqlData.forEach(m => {
-                        if (message.message_id != m.message_id) {
-                            sqlData.push(
-                                response[i].message_id,
-                                response[i].sender_id,
-                                response[i].recipient_id,
-                                response[i].postDate,
-                                response[i].content
-                                );
-                            i++;
-                        }
-                    })
-                });
+                setMessages(response);
             }
         })
     }, []);
@@ -210,14 +194,21 @@ const Messaging = ({ route, navigation }) => {
             <Box style={styles.messageBox}>
                 {(combinedArray.length > 0) ? (
                     <ScrollView>
-                        {combinedArray.map((message) => {
+                        {messages.map((message) => {
                             return (
-                                <VStack space="xs" alignItems="flex-start" key={message.date} >
-                                    {(message.user === "César") ? (
+                                <VStack space="xs" alignItems="flex-start" key={message.message_id} >
+                                    {(message.sender_id === id) ? (
                                         
-                                    <View style={[styles.rightTalkBubble, {width: bubbleDimensions.width, height: bubbleDimensions.height, marginBottom: -13 }]}>
+                                    <View 
+                                        style={[
+                                            styles.rightTalkBubble, 
+                                            {width: bubbleDimensions.width, 
+                                            height: bubbleDimensions.height, marginBottom: -13 
+                                            }
+                                        ]}
+                                    >
                                         <View style={styles.rightTalkBubbleSquare}>
-                                            <Text onLayout={() => {}} style={styles.text}>{message.text}</Text>
+                                            <Text onLayout={() => {}} style={styles.text}>{message.content}</Text>
                                         </View>
                                         <View style={styles.rightTalkBubbleTriangle} />
                                     </View>

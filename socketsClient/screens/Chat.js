@@ -95,6 +95,7 @@ const Chat = ({ navigation }) => {
 
   useEffect(() => {
     socket.on("requestUsers", (response) => setData(response));
+    console.log(data);
   });
 
   return (
@@ -119,28 +120,29 @@ const Chat = ({ navigation }) => {
             <VStack space="lg">
               {data.map((chatData) => {
                 let source = {
-                  ["uri"]: chatData.avatar,
+                  ["uri"]: "" //chatData.avatar,
                 }
-                let alt = chatData.username + " Avatar"
+                let alt = chatData.name + " Avatar"
                 return (
                   <Pressable
                     key={chatData.index}
                     onPress={() => {
                       navigation.navigate("Messaging", {
-                        usr: chatData.username,
-                        st: chatData.state,
-                        avtr: chatData.avatar
+                        usr: chatData.name,
+                        //st: chatData.state,
+                        //avtr: chatData.avatar
                       });
                     }}
                   >
                     <HStack space="sm" alignItems="center">
                       <Avatar size="md">
-                        <AvatarFallbackText>{chatData.username}</AvatarFallbackText>
+                        <AvatarFallbackText>{chatData.name}</AvatarFallbackText>
                         <AvatarImage alt={alt} source={source}/>
                       </Avatar>
                       <VStack>
-                        <Heading>{chatData.username}</Heading>
-                        <Text>{chatData.state}</Text>
+                        <Heading>{chatData.name}</Heading>
+                        {//<Text>{chatData.state}</Text>
+                        }
                       </VStack>
                     </HStack>
                   </Pressable>

@@ -59,14 +59,14 @@ app.get('/', (req, res) => {
 io.on("connection", (socket) => {
   let user_id;
   console.log(`[+]: ${socket.id} user connected.`);
-  sql.query("SELECT user_id AS \"index\", username, avatar, state FROM user WHERE user_id!=?", [user_id], (err, result) => {
+  sql.query("SELECT group_id AS \"index\", name FROM chatgroup", (err, result) => {
     if (err) console.log(err);
     socket.emit("requestUsers", result);
   });
 
   socket.on("requestUsers", (online, id) => {
-    let query = "SELECT user_id AS \"index\", username, avatar, state FROM user WHERE user_id!=?";
-    sql.query(query, [id], (err, result) => {
+    let query = "SELECT group_id AS \"index\", name FROM chatgroup";
+    sql.query(query, (err, result) => {
       if (err) console.log(err);
       socket.emit("requestUsers", result);
     });
@@ -122,21 +122,22 @@ io.on("connection", (socket) => {
     socket.disconnect();
   });
 
-  socket.on("sendMessage", (recipient_id, postDate, content) => {
-    let query = "INSERT INTO message VALUES (DEFAULT, ?, ?, ?, ?)";
-    sql.query(query, [user_id, recipient_id, postDate, content], (err, result) => {
+  socket.on("sendMessage", (sender_id, recipient_id, content) => {
+    let query = "INSERT INTO message VALUES (DEFAULT, ?, ?, DEFAULT, ?)";
+    sql.query(query, [sender_id, recipient_id, content], (err, result) => {
       if (err) console.log(err);
       socket.emit("sendMessage", result);
     });
   });
 
-  socket.on("deployMessages", (sender_id) => {
-    let query = "SELECT * FROM message WHERE sender_id = ? OR recipient_id = ?";
-    sql.query(query, [sender_id], (err, result) => {
+  socket.on("deployMessages", (group_id) => {
+    let query = "SELECT * FROM message WHERE recipient_id = ?";
+    sql.query(query, [group_id], (err, result) => {
       if (err) console.log(err);
       socket.emit("deployMessages", result);
     })
   });
+  
 });
 
 server.listen(PORT, () => {
