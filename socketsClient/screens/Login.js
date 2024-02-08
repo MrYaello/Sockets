@@ -78,10 +78,8 @@ const Login = ({ navigation }) => {
         justifyContent: "flex-start"
       }}>
         <Image
-        alt= "YLCode Logo"
-        source={{
-          uri: "http://ylcode.online:4000/uploads/textlogo512.png"
-        }}
+        alt= "YLCode Text Logo"
+        source={require('../assets/textlogo512.png')}
         style={{
           height: 50,
           width: 100

@@ -51,9 +51,7 @@ const Welcome = ({ navigation }) => {
         <Image
           size="xl"
           alt= "YLCode Logo"
-          source={{
-            uri: "http://ylcode.online:4000/uploads/logo512.png"
-          }}
+          source={require('../assets/logo512.png')}
         />
         <Box width="100%" alignItems="center" justifyContent="flex-end" height="92%" style={{position: "absolute"}}>
         <Button width="80%" justifyContent="space-between" onPress={goToLogin}>

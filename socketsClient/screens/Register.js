@@ -20,13 +20,11 @@ import {
   LockIcon} from "@gluestack-ui/themed";
 import { SafeAreaView, Image, Keyboard } from "react-native";
 import socket from "../assets/utils/socket.js";
+import ModalVerification from "../component/ModalVerification.js";
 import sha256 from "sha256";
 import styles from "../assets/utils/styles.js";
 
-const sendMail = (code, email) => {
-  socket.emit("sendVerificationEmail", code, email);
-}
-
+var buttonCooldown = "Verify";
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -37,7 +35,32 @@ const Register = ({ navigation }) => {
   const [messageUsername, setMessageUsername] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
   const [messagePhonenumber, setMessagePhonenumber] = useState("");
+  const cooldown = 60 * 0.5;
+  const [time, setTime] = useState(cooldown);
+  const [isActive, setIsActive] = useState(false);
+  const [visibleModalVerify, setVisibleModalVerify] = useState(false);
   // ^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$ Regex Email
+
+  useEffect(() => {
+    let interval = null;
+    if (isActive) {
+      buttonCooldown = `${Math.floor(time / 60).toString().padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
+      interval = setInterval(() => {
+        setTime(time - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+
+    if (time === 0) {
+      setIsActive(false);
+      setTime(cooldown)
+      buttonCooldown = "Verify";
+    }
+
+    return () => clearInterval(interval);
+  }, [isActive, time]);
+
   const handleRegister = () => {
     var safeUsername = username.trim();
     if (!password.trim()) setMessagePassword("Obligaroy field.");
@@ -62,6 +85,17 @@ const Register = ({ navigation }) => {
     }
   }
 
+  const verifyEmail = () => {
+    var safeEmail = email.trim();
+    if (!safeEmail) setMessageEmail("Obligatory field.");
+    else if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(safeEmail))) setMessageEmail("Type a valid email.");
+    else {
+      setVisibleModalVerify(true);
+      setIsActive(true);
+      socket.emit("sendVerificationEmail", safeEmail);
+    }
+  }
+
   return (
     <SafeAreaView style={{
         justifyContent: "center",
@@ -72,24 +106,6 @@ const Register = ({ navigation }) => {
         width: "100%",
         height: "100%"
       }}>
-      <Box style={{
-        position: "absolute",
-        flex: 1,
-        height: "100%",
-        paddingTop: "27%",
-        justifyContent: "flex-start"
-      }}>
-        <Image
-        alt= "YLCode Logo"
-        source={{
-          uri: "http://ylcode.online:4000/uploads/textlogo512.png"
-        }}
-        style={{
-          height: 50,
-          width: 100
-        }}
-        />
-      </Box>
       <Box width="80%">
         <Text style={{
           fontSize: 26,
@@ -99,16 +115,16 @@ const Register = ({ navigation }) => {
         }}>Register </Text>
         <FormControl
           size="lg"
-          isDisabled={false}
-          isInvalid={false}
+          isDisabled={emailVerified}
+          isInvalid={messageEmail}
           isReadOnly={false}
           isRequiered={true}
         >
           <FormControlLabel mb="$1">
-            <FormControlLabelText>Email</FormControlLabelText>
+            <FormControlLabelText color={emailVerified ? "$primary600" : "$black"}>{emailVerified ? "Email Verified" : "Email"}</FormControlLabelText>
           </FormControlLabel>
           <Box flexDirection="row">
-          <Input width="68%">
+          <Input width={emailVerified ? "100%" : "72%"}>
             <InputField 
               autoCorrect={false} 
               type="text" 
@@ -120,10 +136,11 @@ const Register = ({ navigation }) => {
               }}  
             />
           </Input>
-          <Button width="28%" ml="4%" flexDirection="row" justifyContent="center">
-            <ButtonText>Verify</ButtonText>
+          
+          {!emailVerified ? <Button width="27%" ml="1%" flexDirection="row" justifyContent="center" onPress={verifyEmail} isDisabled={isActive}>
+            <ButtonText>{buttonCooldown}</ButtonText>
             <ButtonIcon ml="$2" as={CheckIcon}/>
-          </Button>
+          </Button> : "" }
           </Box>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
@@ -134,7 +151,7 @@ const Register = ({ navigation }) => {
         <FormControl
           size="lg"
           isDisabled={!emailVerified}
-          isInvalid={messageUsername}
+          isInvalid={messagePhonenumber}
           isReadOnly={false}
           isRequiered={true}
         >
@@ -155,7 +172,7 @@ const Register = ({ navigation }) => {
           </Input>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
-            <FormControlErrorText>{messageUsername}</FormControlErrorText>
+            <FormControlErrorText>{messagePhonenumber}</FormControlErrorText>
           </FormControlError>
         </FormControl>
 
@@ -240,6 +257,23 @@ const Register = ({ navigation }) => {
           </Button>
         </Box>
       </Box>
+      <Box style={{
+        position: "absolute",
+        flex: 1,
+        height: "100%",
+        flexDirection: "column-reverse",
+        justifyContent: "flex-start"
+      }}>
+        <Image
+        alt= "YLCode Text Logo"
+        source={require('../assets/textlogo512.png')}
+        style={{
+          height: 50,
+          width: 100
+        }}
+        />
+      </Box>
+      {visibleModalVerify ? <ModalVerification setVisible={setVisibleModalVerify} email={email.trim()} setEmailVerified={setEmailVerified}/> : ""}
     </SafeAreaView>
   )
 }

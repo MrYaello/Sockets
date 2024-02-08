@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { SafeAreaView, Platform, Pressable } from "react-native";
 import styles from "../assets/utils/styles.js";
-import Modal from "../component/ModalGroup.js";
+import ModalGroup from "../component/ModalGroup.js";
 import ChatMenu from "../component/ChatMenu.js";
 import ModalLogOut from "../component/ModalLogOut.js";
 import { 
@@ -162,7 +162,7 @@ const Chat = ({ navigation }) => {
           <FabIcon as={EditIcon} /> 
         </Fab>
       </Box>
-      {visible ? <Modal setVisible={setVisible}/> : ""}
+      {visible ? <ModalGroup setVisible={setVisible}/> : ""}
       {visibleModalLogOut ? <ModalLogOut setVisible={setVisibleModalLogOut} navigation={navigation}/> : ""}
     </SafeAreaView>
   )
