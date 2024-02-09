@@ -25,7 +25,7 @@ CREATE TABLE message (
   recipient_id int NOT NULL, 
   postDate DATETIME DEFAULT CURRENT_TIMESTAMP,
   content TEXT DEFAULT NULL,
-  PRIMARY KEY (message_id),
+  PRIMARY KEY (id),
   FOREIGN KEY (sender_id) REFERENCES user(id),
   FOREIGN KEY (recipient_id) REFERENCES chatgroup(id)
 );
