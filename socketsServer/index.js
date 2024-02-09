@@ -89,10 +89,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on("register", (username, salt, password, email, phonenumber) => {
-    let query = "INSERT INTO user (username, salt, password, email, phonenumber) VALUES (?,?,?,?,?)";
-    sql.query(query, [username, salt, password, email, phonenumber], (err, result) => {
+    let queryRegister = "INSERT INTO user (username, salt, password, email, phonenumber) VALUES (?,?,?,?,?)";
+    sql.query(queryRegister, [username, salt, password, email, phonenumber], (err, register) => {
       if (err) console.log(err);
+      else {
+        sql.query("INSERT INTO chatgroup (name) VALUES (?)", [username], (err, group) => {
+          if (err) console.log(err);
+          else {
+            sql.query("INSERT INTO user_chatgroup VALUES (?,?)", [register.insertId, group.insertId], (err, result) => {
+            if (err) console.log(err);
+            });
+          }
+        });
+      }
     });
+    
   });
 
   socket.on("getAvatarSource", (username) => {
