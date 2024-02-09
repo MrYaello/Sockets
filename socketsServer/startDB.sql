@@ -17,6 +17,7 @@ CREATE TABLE chatgroup (
   group_id int NOT NULL AUTO_INCREMENT,
   name varchar(50) DEFAULT NULL,
   isActive BOOLEAN DEFAULT TRUE,
+  avatar varchar(255) DEFAULT "UNSET",
   PRIMARY KEY (group_id)
 );
 

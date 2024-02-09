@@ -66,25 +66,24 @@ const Register = ({ navigation }) => {
   }, [isActive, time]);
 
   const handleRegister = () => {
-    var safeUsername = username.trim();
-    if (!password.trim()) setMessagePassword("Obligaroy field.");
-    if (!phonenumber.trim()) setMessagePhonenumber("Obligatory field.");
-    if (!safeUsername) setMessageUsername("Obligaroy field.");
-    if (phonenumber.trim().length < 10) setMessagePhonenumber("Type a valid phonenumber.")
-    if (safeUsername.length > 16) setMessageUsername("Username lenght must be less than 16.")
+    if (!password) setMessagePassword("Obligaroy field.");
+    if (!phonenumber) setMessagePhonenumber("Obligatory field.");
+    else if (phonenumber.length < 10) setMessagePhonenumber("Type a valid phonenumber.")
+    if (!username) setMessageUsername("Obligaroy field.");
+    if (username.length > 16) setMessageUsername("Username lenght must be less than 16.")
     if (!messagePhonenumber && !messageUsername && !messagePassword) {
-      socket.emit("register", safeUsername);
+      socket.emit("validateUsername", phonenumber);
       socket.off("validateUsername").on("validateUsername", (response) => {
-        if (response.length == 0) {
-          setMessageUsername("Credentials not registered.");
+        if (response.length != 0) {
+          setMessagePhonenumber("Phonenumber already registered.");
         } else {
-          socket.emit("login", safeUsername, password.trim());
-          socket.off("login").on("login", (auth) => {
-            if (auth.length == 0) {
-              setMessagePassword("Invalid password.");
+          socket.emit("validateUsername", username);
+          socket.off("validateUsername").on("validateUsername", (response) => {
+            if (response.length != 0) {
+              setMessageUsername("Username already registered.");
             } else {
-              store("username", auth[0].username);
-              navigation.navigate("Chat");
+              let salt = (Math.random() + 1).toString(36).substring(2, 10);
+              socket.emit("register", username, salt, sha256(salt+password), email, phonenumber);
             }
           });
         }
@@ -93,16 +92,16 @@ const Register = ({ navigation }) => {
   }
 
   const verifyEmail = () => {
-    var safeEmail = email.trim();
-    if (!safeEmail) setMessageEmail("Obligatory field.");
-    else if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(safeEmail))) setMessageEmail("Type a valid email.");
+    var email = email;
+    if (!email) setMessageEmail("Obligatory field.");
+    else if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(email))) setMessageEmail("Type a valid email.");
     else {
-      socket.emit("validateUsername", safeEmail);
+      socket.emit("validateUsername", email);
       socket.off("validateUsername").on("validateUsername", (response) => {
         if (response.length == 0) {
           setVisibleModalVerify(true);
           setIsActive(true);
-          socket.emit("sendVerificationEmail", safeEmail);
+          socket.emit("sendVerificationEmail", email);
         } else {
           setMessageEmail("Credentials already registered.");
         }
@@ -146,7 +145,7 @@ const Register = ({ navigation }) => {
               defaultValue=""
               placeholder="Where could we email you?"
               onChangeText={(value) => {
-                setEmail(value);
+                setEmail(value.trim());
                 setMessageEmail("");
               }}  
             />
@@ -183,7 +182,7 @@ const Register = ({ navigation }) => {
               defaultValue="" 
               placeholder="Where should we call you?"
               onChangeText={(value) => {
-                setPhonenumber(value);
+                setPhonenumber(value.trim());
                 setMessagePhonenumber("");
               }}  
             />
@@ -212,7 +211,7 @@ const Register = ({ navigation }) => {
               defaultValue="" 
               placeholder="Choose your alter ego"
               onChangeText={(value) => {
-                setUsername(value);
+                setUsername(value.trim());
                 setMessageUsername("");
               }}  
             />
@@ -242,7 +241,7 @@ const Register = ({ navigation }) => {
                 defaultValue="" 
                 placeholder="Forge the key to your digital realm"
                 onChangeText={(value) => {
-                  setPassword(value);
+                  setPassword(value.trim());
                   setMessagePassword("");
                 }}  
               />
@@ -299,7 +298,7 @@ const Register = ({ navigation }) => {
         }}
         />
       </Box>
-      {visibleModalVerify ? <ModalVerification setVisible={setVisibleModalVerify} email={email.trim()} setEmailVerified={setEmailVerified}/> : ""}
+      {visibleModalVerify ? <ModalVerification setVisible={setVisibleModalVerify} email={email} setEmailVerified={setEmailVerified}/> : ""}
     </SafeAreaView>
   )
 }

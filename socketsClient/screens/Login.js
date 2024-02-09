@@ -40,16 +40,16 @@ const Login = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = () => {
-    var safeUsername = username.trim();
-    if (!password.trim()) setMessagePassword("Obligatory field.");
-    if (!safeUsername) setMessageUsername("Obligatory field.");
+    if (!password) setMessagePassword("Obligatory field.");
+    if (!username) setMessageUsername("Obligatory field.");
     else {
-      socket.emit("validateUsername", safeUsername);
+      socket.emit("validateUsername", username);
       socket.off("validateUsername").on("validateUsername", (response) => {
         if (response.length == 0) {
           setMessageUsername("Credentials not registered.");
         } else {
-          socket.emit("login", safeUsername, sha256(password.trim()));
+          let salt = response[0].salt;
+          socket.emit("login", username, sha256(salt+password));
           socket.off("login").on("login", (auth) => {
             if (auth.length == 0) {
               setMessagePassword("Invalid password.");
@@ -113,7 +113,7 @@ const Login = ({ navigation }) => {
               defaultValue="" 
               placeholder="Username, Email or Phone number"
               onChangeText={(value) => {
-                setUsername(value);
+                setUsername(value.trim());
                 setMessageUsername("");
               }}  
             />
@@ -144,7 +144,7 @@ const Login = ({ navigation }) => {
                 defaultValue="" 
                 placeholder="Type your magic key"
                 onChangeText={(value) => {
-                  setPassword(value);
+                  setPassword(value.trim());
                   setMessagePassword("");
                 }}  
               />
