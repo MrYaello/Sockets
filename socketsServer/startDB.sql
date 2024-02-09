@@ -32,10 +32,8 @@ CREATE TABLE message (
 );
 
 CREATE TABLE user_chatgroup (
-  member_id int NOT NULL AUTO_INCREMENT,
   user_id int NOT NULL,
   group_id int NOT NULL,
-  PRIMARY KEY (member_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id),
   FOREIGN KEY (group_id) REFERENCES chatgroup(group_id)
 );

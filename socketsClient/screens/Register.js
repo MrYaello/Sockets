@@ -17,6 +17,9 @@ import {
   ButtonIcon,
   Text,
   CheckIcon,
+  EyeIcon,
+  EyeOffIcon,
+  Icon,
   LockIcon} from "@gluestack-ui/themed";
 import { SafeAreaView, Image, Keyboard } from "react-native";
 import socket from "../assets/utils/socket.js";
@@ -30,7 +33,7 @@ const Register = ({ navigation }) => {
   const [phonenumber, setPhonenumber] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(true);
   const [messagePassword, setMessagePassword] = useState("");
   const [messageUsername, setMessageUsername] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
@@ -38,8 +41,8 @@ const Register = ({ navigation }) => {
   const cooldown = 60 * 0.5;
   const [time, setTime] = useState(cooldown);
   const [isActive, setIsActive] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [visibleModalVerify, setVisibleModalVerify] = useState(false);
-  // ^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$ Regex Email
 
   useEffect(() => {
     let interval = null;
@@ -47,8 +50,9 @@ const Register = ({ navigation }) => {
       buttonCooldown = `${Math.floor(time / 60).toString().padStart(2, "0")}:${(time % 60).toString().padStart(2, "0")}`;
       interval = setInterval(() => {
         setTime(time - 1);
-      }, 1000);
+      }, 10);
     } else {
+      buttonCooldown = "Verify";
       clearInterval(interval);
     }
 
@@ -64,9 +68,12 @@ const Register = ({ navigation }) => {
   const handleRegister = () => {
     var safeUsername = username.trim();
     if (!password.trim()) setMessagePassword("Obligaroy field.");
+    if (!phonenumber.trim()) setMessagePhonenumber("Obligatory field.");
     if (!safeUsername) setMessageUsername("Obligaroy field.");
-    else {
-      socket.emit("validateUsername", safeUsername);
+    if (phonenumber.trim().length < 10) setMessagePhonenumber("Type a valid phonenumber.")
+    if (safeUsername.length > 16) setMessageUsername("Username lenght must be less than 16.")
+    if (!messagePhonenumber && !messageUsername && !messagePassword) {
+      socket.emit("register", safeUsername);
       socket.off("validateUsername").on("validateUsername", (response) => {
         if (response.length == 0) {
           setMessageUsername("Credentials not registered.");
@@ -90,9 +97,16 @@ const Register = ({ navigation }) => {
     if (!safeEmail) setMessageEmail("Obligatory field.");
     else if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(safeEmail))) setMessageEmail("Type a valid email.");
     else {
-      setVisibleModalVerify(true);
-      setIsActive(true);
-      socket.emit("sendVerificationEmail", safeEmail);
+      socket.emit("validateUsername", safeEmail);
+      socket.off("validateUsername").on("validateUsername", (response) => {
+        if (response.length == 0) {
+          setVisibleModalVerify(true);
+          setIsActive(true);
+          socket.emit("sendVerificationEmail", safeEmail);
+        } else {
+          setMessageEmail("Credentials already registered.");
+        }
+      });
     }
   }
 
@@ -126,7 +140,8 @@ const Register = ({ navigation }) => {
           <Box flexDirection="row">
           <Input width={emailVerified ? "100%" : "72%"}>
             <InputField 
-              autoCorrect={false} 
+              autoCorrect={false}
+              autoCapitalize="none"
               type="text" 
               defaultValue=""
               placeholder="Where could we email you?"
@@ -145,6 +160,7 @@ const Register = ({ navigation }) => {
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
             <FormControlErrorText>{messageEmail}</FormControlErrorText>
+            {messageEmail=="Credentials already registered." ? <Button variant="link" style={{height: 22}} onPress={() => navigation.navigate("Login")}><ButtonText>Login?</ButtonText></Button> : ""}
           </FormControlError>
         </FormControl>
         
@@ -160,7 +176,9 @@ const Register = ({ navigation }) => {
           </FormControlLabel>
           <Input>
             <InputField 
-              autoCorrect={false} 
+              autoCorrect={false}
+              autoCapitalize="none"
+              keyboardType="number-pad"
               type="text" 
               defaultValue="" 
               placeholder="Where should we call you?"
@@ -188,7 +206,8 @@ const Register = ({ navigation }) => {
           </FormControlLabel>
           <Input>
             <InputField 
-              autoCorrect={false} 
+              autoCorrect={false}
+              autoCapitalize="none"
               type="text" 
               defaultValue="" 
               placeholder="Choose your alter ego"
@@ -200,7 +219,7 @@ const Register = ({ navigation }) => {
           </Input>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
-            <FormControlErrorText></FormControlErrorText>
+            <FormControlErrorText>{messageUsername}</FormControlErrorText>
           </FormControlError>
         </FormControl>
 
@@ -214,22 +233,28 @@ const Register = ({ navigation }) => {
           <FormControlLabel mb="$1">
             <FormControlLabelText color={!emailVerified ? "$textLight400" : "$black"}>Password</FormControlLabelText>
           </FormControlLabel>
-          <Input>
-            <InputField 
-              autoCorrect={false} 
-              type="password" 
-              defaultValue="" 
-              placeholder="Forge the key to your digital realm"
-              onChangeText={(value) => {
-                setPassword(value);
-                setMessagePassword("");
-              }}  
-            />
-          </Input>
+          <Box flexDirection="row">
+            <Input width="84%" mr="2%">
+              <InputField 
+                autoCorrect={false}
+                autoCapitalize="none" 
+                type={showPassword ? "input" : "password"} 
+                defaultValue="" 
+                placeholder="Forge the key to your digital realm"
+                onChangeText={(value) => {
+                  setPassword(value);
+                  setMessagePassword("");
+                }}  
+              />
+            </Input>
+            <Button variant="outline" width="14%" justifyContent="center" flexDirection="row" onPress={() => {setShowPassword(!showPassword)}} isDisabled={!emailVerified}>
+              <ButtonIcon ml="0" as={EyeOffIcon}/>
+            </Button>
+          </Box>
           
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon}/>
-            <FormControlErrorText></FormControlErrorText>
+            <FormControlErrorText>{messagePassword}</FormControlErrorText>
           </FormControlError>
         </FormControl>
         <FormControl 
@@ -239,6 +264,7 @@ const Register = ({ navigation }) => {
             flexDirection="row"
             justifyContent="space-between"
             isDisabled={!emailVerified}
+            onPress={handleRegister}
           >
             <ButtonText 
               fontSize="$sm" 
