@@ -53,10 +53,11 @@ const ChatMenu = ({username, setVisibleModalLogOut}) => {
 
 const styles = StyleSheet.create({
     menu: {
-        marginTop: 15,
+        marginTop: -10,
         borderRadius: 13,
         maxWidth: 50,
-        marginLeft: 210
+        marginLeft: 290,
+        position: "absolute"
     }
 });
 
