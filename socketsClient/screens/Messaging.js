@@ -30,6 +30,7 @@ import {
 import { ChevronLeftIcon, CircleIcon, MenuIcon, CheckCircleIcon, GripVerticalIcon} from "@gluestack-ui/themed";
 import { Camera, Zap } from "lucide-react-native";
 
+/*
 const myMessages= [
     {
         text: "ME LA PONES COMO PATA DE PERRO",
@@ -41,14 +42,18 @@ const myMessages= [
         date: new Date(2024, 0, 27, 12, 31, 59, null).toLocaleString(),
         user: "César",
     }
-]
+]*/
 
 
 const Messaging = ({ route, navigation }) => {
+    const[id, setId] = useState("");
     const { usr, st, avtr } = route.params;
     const username = JSON.stringify(usr).replace(/^"(.*)"$/, '$1');
+    const [messages, setMessages] = useState([]);
+    // We don't neet the state param anymore.
     const ste = JSON.stringify(st);
     const state = JSON.parse(ste);
+
     const avatar = JSON.stringify(avtr).replace(/^"(.*)"$/, '$1');
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const textRef = useRef(null);
@@ -70,10 +75,23 @@ const Messaging = ({ route, navigation }) => {
     };
 
     const aLowercaseLength = 20; // 19 w's
+
+    const getId = async () => {
+        try {
+          const value = await AsyncStorage.getItem("id");
+          if (value !== null) {
+            setId(value);
+            socket.emit("identify", id);
+            socket.emit("requestUsers", false, value);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
     
 
-    useLayoutEffect(() => {
-        state.forEach(message => {
+    /*useLayoutEffect(() => {
+        /*state.forEach(message => {
             if (message.text.length <= 32) {
                 const resultWidth = message.text.length * aLowercaseLength + 30;
                 const newWidth = resultWidth <= 250 ? resultWidth : 250;
@@ -81,22 +99,24 @@ const Messaging = ({ route, navigation }) => {
                 //setBubbleDimensions({ width: newWidth, height: newHeight });
             }
         });
-    }, []);
+    }, []);*/
 
     useEffect(() => {
-        const merged = [...state, ...myMessages].sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            return dateA - dateB;
-        });
-        
-        setCombinedArray(merged);
+        getId();
+        socket.emit("deployMessages", id);
+        socket.off("deployMessages").on("deployMessages", (response) => {
+            if (response.length == 0) {
+                // Here it's supposed to deploy a text saying there're no messages.
+            } else {
+                setMessages(response);
+            }
+        })
     }, []);
 
     return (
         <SafeAreaView>
             <Box style={styles.headingBox}>
-                <HStack style={{alignItems: "center", paddingTop: 10,}} >
+                <HStack style={{alignItems: "center", paddingTop: 10, }} >
                     <Button 
                         size="xs" 
                         onPress={getBack} 
@@ -106,7 +126,17 @@ const Messaging = ({ route, navigation }) => {
                     >
                         <ButtonIcon as={ChevronLeftIcon} size="2xl" color="$black" />
                     </Button>
-                    <Text style={{fontWeight: "600", fontSize: 30, color: "black", paddingTop: 10, marginLeft: -5}}>{username}</Text>
+                    <Text 
+                        style={{
+                            fontWeight: "600", 
+                            fontSize: 30, 
+                            color: "black", 
+                            paddingTop: 10, 
+                            marginLeft: -5
+                        }}
+                    >
+                        {username}
+                    </Text>
                     <Button bg="$backgroundDark100" onPress={() => setShowAlertDialog(true)}>
                         <Avatar size="md" >
                             {avatar ? <></> : 
@@ -118,7 +148,7 @@ const Messaging = ({ route, navigation }) => {
                         <BadgeIcon as={CircleIcon} ml="$2" color="$green600" />
                         <BadgeText style={{marginLeft: 5}} color="$green600" >online</BadgeText>
                     </Badge>
-                    <Button bg="$backgroundDark100" style={{marginLeft: 100}} onPress={() => setShowAlertDialog(true)}>
+                    <Button bg="$backgroundDark100" style={{}} onPress={() => setShowAlertDialog(true)}>
                         <ButtonIcon as={MenuIcon} size="2xl" color="$black" />
                     </Button>
                     <AlertDialog
@@ -164,14 +194,21 @@ const Messaging = ({ route, navigation }) => {
             <Box style={styles.messageBox}>
                 {(combinedArray.length > 0) ? (
                     <ScrollView>
-                        {combinedArray.map((message) => {
+                        {messages.map((message) => {
                             return (
-                                <VStack space="xs" alignItems="flex-start" key={message.date} >
-                                    {(message.user === "César") ? (
+                                <VStack space="xs" alignItems="flex-start" key={message.message_id} >
+                                    {(message.sender_id === id) ? (
                                         
-                                    <View style={[styles.rightTalkBubble, {width: bubbleDimensions.width, height: bubbleDimensions.height, marginBottom: -13 }]}>
+                                    <View 
+                                        style={[
+                                            styles.rightTalkBubble, 
+                                            {width: bubbleDimensions.width, 
+                                            height: bubbleDimensions.height, marginBottom: -13 
+                                            }
+                                        ]}
+                                    >
                                         <View style={styles.rightTalkBubbleSquare}>
-                                            <Text onLayout={() => {}} style={styles.text}>{message.text}</Text>
+                                            <Text onLayout={() => {}} style={styles.text}>{message.content}</Text>
                                         </View>
                                         <View style={styles.rightTalkBubbleTriangle} />
                                     </View>
@@ -276,10 +313,11 @@ const styles = StyleSheet.create({
         borderBottomColor: "transparent",
     },
     headingBox: {
-        marginBottom: 20
+        marginBottom: 10,
     },
     messageBox: {
         minHeight: "78%",
+        maxHeight: "78%",
         verticalAlign: "top"
     },
     actionBox: {
