@@ -86,7 +86,7 @@ const Chat = ({ navigation }) => {
       console.error(e);
     }
   };
-  
+
   useLayoutEffect(() => {
     getUsername();
     getId();
@@ -128,8 +128,9 @@ const Chat = ({ navigation }) => {
                     key={chatData.index}
                     onPress={() => {
                       navigation.navigate("Messaging", {
+                        gr: chatData.group_id,
                         usr: chatData.name,
-                        //st: chatData.state,
+                        st: chatData.state,
                         //avtr: chatData.avatar
                       });
                     }}
@@ -141,8 +142,7 @@ const Chat = ({ navigation }) => {
                       </Avatar>
                       <VStack>
                         <Heading>{chatData.name}</Heading>
-                        {//<Text>{chatData.state}</Text>
-                        }
+                        <Text>{chatData.state}</Text>
                       </VStack>
                     </HStack>
                   </Pressable>

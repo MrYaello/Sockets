@@ -65,7 +65,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("requestUsers", (online, id) => {
-    let query = "SELECT group_id AS \"index\", name FROM chatgroup";
+    let query = "SELECT c.group_id AS 'index', c.name, m.content AS 'state' FROM chatgroup c LEFT JOIN (SELECT * FROM message m1 WHERE (m1.recipient_id, m1.postDate) IN (SELECT recipient_id, MAX(postDate) FROM message GROUP BY recipient_id)) m ON c.group_id = m.recipient_id";
     sql.query(query, (err, result) => {
       if (err) console.log(err);
       socket.emit("requestUsers", result);
@@ -160,6 +160,7 @@ io.on("connection", (socket) => {
       socket.emit("deployMessages", result);
     })
   });
+
   
 });
 
