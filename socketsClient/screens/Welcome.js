@@ -28,7 +28,7 @@ const Welcome = ({ navigation }) => {
       const value = await AsyncStorage.getItem("username");
       if (value !== null) {
         setUsername(value);
-        navigation.navigate("Chat");
+        navigation.replace("Chat");
       }
     } catch (e) {
       console.error(e);
