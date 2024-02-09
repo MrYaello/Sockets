@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("validateUsername", (auth) => {
-    let query = "SELECT user_id FROM user WHERE username=? OR email=? OR phonenumber=?"; 
+    let query = "SELECT user_id, salt FROM user WHERE username=? OR email=? OR phonenumber=?"; 
     sql.query(query, [auth, auth, auth], (err, result) => {
       if (err) console.log(err);
       socket.emit("validateUsername", result);
@@ -119,7 +119,7 @@ io.on("connection", (socket) => {
     sql.query(query, [email, code], (err, result) => {
       if (err) console.log(err);
     });
-    //sendMail(code, email);
+    sendMail(code, email);
   });
 
   socket.on("verifyEmailCode", (email) => {
