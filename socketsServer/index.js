@@ -59,13 +59,13 @@ app.get('/', (req, res) => {
 io.on("connection", (socket) => {
   let user_id;
   console.log(`[+]: ${socket.id} user connected.`);
-  sql.query("SELECT c.group_id AS 'index', c.name, c.avatar, m.content AS 'state' FROM chatgroup c LEFT JOIN (SELECT * FROM message m1 WHERE (m1.recipient_id, m1.postDate) IN (SELECT recipient_id, MAX(postDate) FROM message GROUP BY recipient_id)) m ON c.group_id = m.recipient_id", (err, result) => {
+  sql.query("SELECT c.id AS 'index', c.name, c.avatar, m.content AS 'state' FROM chatgroup c LEFT JOIN (SELECT * FROM message m1 WHERE (m1.recipient_id, m1.postDate) IN (SELECT recipient_id, MAX(postDate) FROM message GROUP BY recipient_id)) m ON c.id = m.recipient_id", (err, result) => {
     if (err) console.log(err);
     socket.emit("requestUsers", result);
   });
 
   socket.on("requestUsers", (online, id) => {
-    let query = "SELECT c.group_id AS 'index', c.name, c.avatar, m.content AS 'state' FROM chatgroup c LEFT JOIN (SELECT * FROM message m1 WHERE (m1.recipient_id, m1.postDate) IN (SELECT recipient_id, MAX(postDate) FROM message GROUP BY recipient_id)) m ON c.group_id = m.recipient_id";
+    let query = "SELECT c.id AS 'index', c.name, c.avatar, m.content AS 'state' FROM chatgroup c LEFT JOIN (SELECT * FROM message m1 WHERE (m1.recipient_id, m1.postDate) IN (SELECT recipient_id, MAX(postDate) FROM message GROUP BY recipient_id)) m ON c.id = m.recipient_id";
     sql.query(query, (err, result) => {
       if (err) console.log(err);
       socket.emit("requestUsers", result);
@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("validateUsername", (auth) => {
-    let query = "SELECT user_id, salt FROM user WHERE username=? OR email=? OR phonenumber=?"; 
+    let query = "SELECT id, salt FROM user WHERE username=? OR email=? OR phonenumber=?"; 
     sql.query(query, [auth, auth, auth], (err, result) => {
       if (err) console.log(err);
       socket.emit("validateUsername", result);
@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("login", (username, password) => {
-    let query = "SELECT username, user_id AS \"index\" FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
+    let query = "SELECT username, id AS \"index\" FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
     sql.query(query, [username, password, username, password, username, password], (err, result) => {
       if (err) console.log(err);
       socket.emit("login", result);
@@ -107,7 +107,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("getAvatarSource", (username) => {
-    let query = "SELECT avatar FROM user WHERE username=?"
+    let query = "SELECT avatar FROM chatgroup WHERE name=?"
     sql.query(query, [username], (err, result) =>{
       if (err) console.error(err);
       if (result.length > 0) {
