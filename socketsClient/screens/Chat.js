@@ -55,7 +55,7 @@ const Chat = ({ navigation }) => {
   useLayoutEffect(() => {
     getUsername();
     getId();
-    //socket.on("requestUsers", (response) => setData(response));
+    socket.on("requestUsers", (response) => setData(response));
   }, []);
 
   useEffect(() => {

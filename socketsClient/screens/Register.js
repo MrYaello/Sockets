@@ -84,6 +84,7 @@ const Register = ({ navigation }) => {
             } else {
               let salt = (Math.random() + 1).toString(36).substring(2, 10);
               socket.emit("register", username, salt, sha256(salt+password), email, phonenumber);
+              navigation.navigate("Login");
             }
           });
         }
@@ -92,7 +93,6 @@ const Register = ({ navigation }) => {
   }
 
   const verifyEmail = () => {
-    var email = email;
     if (!email) setMessageEmail("Obligatory field.");
     else if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/.test(email))) setMessageEmail("Type a valid email.");
     else {
