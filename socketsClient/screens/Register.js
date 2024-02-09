@@ -33,7 +33,7 @@ const Register = ({ navigation }) => {
   const [phonenumber, setPhonenumber] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [emailVerified, setEmailVerified] = useState(true);
+  const [emailVerified, setEmailVerified] = useState(false);
   const [messagePassword, setMessagePassword] = useState("");
   const [messageUsername, setMessageUsername] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
