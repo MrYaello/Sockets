@@ -21,41 +21,6 @@ import {
 import socket from "../assets/utils/socket.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const chats = [
-  {
-    username: "Yael",
-    avatar: "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
-    state: [
-      {
-        text: "SÍ O NOOOO ",
-        date: new Date(2024, 0, 24, 17, 58, 57, null).toLocaleString(),
-        user: "Yael",
-      }, 
-      {
-        text: "O Q ROLLITO PRIMAVERAAAA",
-        date: new Date(2024, 0, 24, 17, 59, 45, null).toLocaleString(),
-        user: "Yael",
-      }
-    ]
-  },
-  {
-    username: "Luki",
-    avatar: "", //"https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png",
-    state: [
-      {
-        text: "QUÉ BONITOS OJOS TIENES",
-        date: new Date(2024, 0, 25, 19, 9, null).toLocaleString(),
-        user: "Luki",
-      },
-      {
-        text: "...",
-        date: new Date(2024, 0, 25, 19, 10, null).toLocaleString(),
-        user: "Luki",
-      }
-    ]
-  }
-];
-
 const Chat = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [id, setId] = useState("");
@@ -105,7 +70,7 @@ const Chat = ({ navigation }) => {
           <Heading style={Platform.OS === "ios" && {marginTop: 10, paddingBottom:30}}>
             {username}
           </Heading>
-          <ChatMenu username={username} setVisibleModalLogOut={setVisibleModalLogOut} alignItems="flex-end"/>
+          <ChatMenu username={username} setVisibleModalLogOut={setVisibleModalLogOut} />
         </HStack>
       </Box>
       <Box
@@ -120,7 +85,7 @@ const Chat = ({ navigation }) => {
             <VStack space="lg">
               {data.map((chatData) => {
                 let source = {
-                  ["uri"]: "" //chatData.avatar,
+                  ["uri"]: chatData.avatar,
                 }
                 let alt = chatData.name + " Avatar"
                 return (
@@ -131,7 +96,7 @@ const Chat = ({ navigation }) => {
                         gr: chatData.group_id,
                         usr: chatData.name,
                         st: chatData.state,
-                        //avtr: chatData.avatar
+                        avtr: chatData.avatar
                       });
                     }}
                   >

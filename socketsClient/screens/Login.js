@@ -16,6 +16,7 @@ import {
   Button,
   ButtonIcon, 
   Text,
+  EyeOffIcon,
   LockIcon} from "@gluestack-ui/themed";
 import { SafeAreaView, Image } from "react-native";
 import socket from "../assets/utils/socket.js";
@@ -36,18 +37,19 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [messagePassword, setMessagePassword] = useState("");
   const [messageUsername, setMessageUsername] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = () => {
-    var safeUsername = username.trim();
-    if (!password.trim()) setMessagePassword("Obligatory field.");
-    if (!safeUsername) setMessageUsername("Obligatory field.");
+    if (!password) setMessagePassword("Obligatory field.");
+    if (!username) setMessageUsername("Obligatory field.");
     else {
-      socket.emit("validateUsername", safeUsername);
+      socket.emit("validateUsername", username);
       socket.off("validateUsername").on("validateUsername", (response) => {
         if (response.length == 0) {
           setMessageUsername("Credentials not registered.");
         } else {
-          socket.emit("login", safeUsername, sha256(password.trim()));
+          let salt = response[0].salt;
+          socket.emit("login", username, sha256(salt+password));
           socket.off("login").on("login", (auth) => {
             if (auth.length == 0) {
               setMessagePassword("Invalid password.");
@@ -105,12 +107,13 @@ const Login = ({ navigation }) => {
           </FormControlLabel>
           <Input>
             <InputField 
-              autoCorrect={false} 
+              autoCorrect={false}
+              autoCapitalize="none"
               type="text" 
               defaultValue="" 
               placeholder="Username, Email or Phone number"
               onChangeText={(value) => {
-                setUsername(value);
+                setUsername(value.trim());
                 setMessageUsername("");
               }}  
             />
@@ -132,18 +135,24 @@ const Login = ({ navigation }) => {
           <FormControlLabel mb="$1">
             <FormControlLabelText>Password</FormControlLabelText>
           </FormControlLabel>
-          <Input>
-            <InputField 
-              autoCorrect={false} 
-              type="password" 
-              defaultValue="" 
-              placeholder="Password"
-              onChangeText={(value) => {
-                setPassword(value);
-                setMessagePassword("");
-              }}  
-            />
-          </Input>
+          <Box flexDirection="row">
+            <Input width="84%" mr="2%">
+              <InputField 
+                autoCorrect={false}
+                autoCapitalize="none" 
+                type={showPassword ? "input" : "password"} 
+                defaultValue="" 
+                placeholder="Type your magic key"
+                onChangeText={(value) => {
+                  setPassword(value.trim());
+                  setMessagePassword("");
+                }}  
+              />
+            </Input>
+            <Button variant="outline" width="14%" justifyContent="center" flexDirection="row" onPress={() => {setShowPassword(!showPassword)}}>
+              <ButtonIcon ml="0" as={EyeOffIcon}/>
+            </Button>
+          </Box>
           
           <FormControlError>
             <FormControlErrorIcon as={LockIcon}/>
