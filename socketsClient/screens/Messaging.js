@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { SafeAreaView, View, StyleSheet, Image } from "react-native";
+import { SafeAreaView, View, StyleSheet, Image, KeyboardAvoidingView } from "react-native";
 import { 
     ScrollView, 
     Text, 
@@ -27,43 +27,27 @@ import {
     Input,
     InputField,
 } from "@gluestack-ui/themed";
+import socket from "../assets/utils/socket.js";
 import { ChevronLeftIcon, CircleIcon, MenuIcon, CheckCircleIcon, GripVerticalIcon} from "@gluestack-ui/themed";
 import { Camera, Zap } from "lucide-react-native";
 
-/*
-const myMessages= [
-    {
-        text: "ME LA PONES COMO PATA DE PERRO",
-        date: new Date(2024, 0, 27, 12, 31, 5, null).toLocaleString(),
-        user: "César"
-    },
-    {
-        text: "JE JE JE JE BIEN CHUECOTA TE PARTO EL EJE",
-        date: new Date(2024, 0, 27, 12, 31, 59, null).toLocaleString(),
-        user: "César",
-    }
-]*/
-
-
 const Messaging = ({ route, navigation }) => {
-    const[id, setId] = useState("");
-    const { usr, st, avtr } = route.params;
-    const username = JSON.stringify(usr).replace(/^"(.*)"$/, '$1');
-    const [messages, setMessages] = useState([]);
-    // We don't neet the state param anymore.
-    const ste = JSON.stringify(st);
-    const state = JSON.parse(ste);
+    const { gr, usr, avtr, mid } = route.params;
 
+    const group = JSON.stringify(gr);//.replace(/^"(.*)"$/, '$1');
+    const username = JSON.stringify(usr).replace(/^"(.*)"$/, '$1');
     const avatar = JSON.stringify(avtr).replace(/^"(.*)"$/, '$1');
+    const id = JSON.stringify(mid).replace(/^"(.*)"$/, '$1');
+    const [messages, setMessages] = useState([]);
+
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const textRef = useRef(null);
-    const [combinedArray, setCombinedArray] = useState([]);
     const [placeholderIsSelected, setPlaceholderIsSelected] = useState(false);
 
-    const [bubbleDimensions, setBubbleDimensions] = useState({
+    /*const [bubbleDimensions, setBubbleDimensions] = useState({
         width: 250,
         height: 80,
-    });
+    });*/
 
     const getBack = () => {
         navigation.navigate("Chat");
@@ -74,43 +58,18 @@ const Messaging = ({ route, navigation }) => {
         ["uri"]: avatar, 
     };
 
-    const aLowercaseLength = 20; // 19 w's
-
-    const getId = async () => {
-        try {
-          const value = await AsyncStorage.getItem("id");
-          if (value !== null) {
-            setId(value);
-            socket.emit("identify", id);
-            socket.emit("requestUsers", false, value);
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      };
-    
-
-    /*useLayoutEffect(() => {
-        /*state.forEach(message => {
-            if (message.text.length <= 32) {
-                const resultWidth = message.text.length * aLowercaseLength + 30;
-                const newWidth = resultWidth <= 250 ? resultWidth : 250;
-                const newHeight = bubbleDimensions.height;
-                //setBubbleDimensions({ width: newWidth, height: newHeight });
-            }
-        });
-    }, []);*/
+    function measure(text) {
+        if (text.length <= 32) {
+            const resultWidth = text.length * 20 + 30;
+            return resultWidth <= 250 ? resultWidth : 250;
+        } else return 250;
+    };
 
     useEffect(() => {
-        getId();
-        socket.emit("deployMessages", id);
+        socket.emit("deployMessages", group);
         socket.off("deployMessages").on("deployMessages", (response) => {
-            if (response.length == 0) {
-                // Here it's supposed to deploy a text saying there're no messages.
-            } else {
-                setMessages(response);
-            }
-        })
+            setMessages(response);
+        });
     }, []);
 
     return (
@@ -192,7 +151,7 @@ const Messaging = ({ route, navigation }) => {
                 </HStack>
             </Box>
             <Box style={styles.messageBox}>
-                {(combinedArray.length > 0) ? (
+                {(messages.length > 0) ? (
                     <ScrollView>
                         {messages.map((message) => {
                             return (
@@ -202,8 +161,8 @@ const Messaging = ({ route, navigation }) => {
                                     <View 
                                         style={[
                                             styles.rightTalkBubble, 
-                                            {width: bubbleDimensions.width, 
-                                            height: bubbleDimensions.height, marginBottom: -13 
+                                            {width: measure(message.content), 
+                                            height: 80, marginBottom: -13 
                                             }
                                         ]}
                                     >
@@ -213,7 +172,13 @@ const Messaging = ({ route, navigation }) => {
                                         <View style={styles.rightTalkBubbleTriangle} />
                                     </View>
                                     ) : (
-                                    <View style={[styles.leftTalkBubble, {width: bubbleDimensions.width, height: bubbleDimensions.height }]}>
+                                    <View 
+                                        style={[
+                                            styles.leftTalkBubble, 
+                                            {width: measure(message.content), 
+                                            height: 80 }
+                                        ]}
+                                    >
                                         <View style={styles.leftTalkBubbleSquare} >
                                             <Text onLayout={() => {}} style={styles.text}>{message.text}</Text>
                                         </View>
@@ -225,7 +190,9 @@ const Messaging = ({ route, navigation }) => {
 
                     </ScrollView>
                 ) : (
-                    <Text>Click the icon to start a new Chat!</Text>
+                    <Box style = {{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                        <Text style={{alignSelf: "center"}}>There are no messsages here!</Text>
+                    </Box>
                 )}
             </Box>
             <Box style={styles.actionBox}>
@@ -316,12 +283,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     messageBox: {
-        minHeight: "78%",
-        maxHeight: "78%",
+        minHeight: "80%",
+        maxHeight: "80%",
         verticalAlign: "top"
     },
     actionBox: {
-        height: "22%",
+        height: "20%",
         backgroundColor: "rgba(55, 40, 160, 1)",
     },
     inputBox: {

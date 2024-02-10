@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         marginTop: -10,
         borderRadius: 13,
         maxWidth: 50,
-        marginLeft: 290,
+        marginLeft: "65%",
         position: "absolute"
     }
 });
