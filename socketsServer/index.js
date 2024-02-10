@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("validateUsername", (auth) => {
-    let query = "SELECT user_id FROM user WHERE username=? OR email=? OR phonenumber=?"; 
+    let query = "SELECT id FROM user WHERE username=? OR email=? OR phonenumber=?"; 
     sql.query(query, [auth, auth, auth], (err, result) => {
       if (err) console.log(err);
       socket.emit("validateUsername", result);
@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("login", (username, password) => {
-    let query = "SELECT username, user_id AS \"index\" FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
+    let query = "SELECT username, id AS \"index\" FROM user WHERE username=? AND password=? OR email=? AND password=? OR phonenumber=? AND password=?";
     sql.query(query, [username, password, username, password, username, password], (err, result) => {
       if (err) console.log(err);
       socket.emit("login", result);
