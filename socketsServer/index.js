@@ -103,7 +103,6 @@ io.on("connection", (socket) => {
         });
       }
     });
-    
   });
 
   socket.on("getAvatarSource", (username) => {
