@@ -3,7 +3,7 @@ import { MenuIcon, Button, Icon, Avatar, AvatarFallbackText, AvatarImage, Text, 
     ActionsheetItemText } from "@gluestack-ui/themed";
 import socket from "../assets/utils/socket";
 import { useState, useLayoutEffect } from "react";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 const ChatMenu = ({username, setVisibleModalLogOut}) => {
 
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         marginTop: -10,
         borderRadius: 13,
         maxWidth: 50,
-        marginLeft: "65%",
+        marginLeft: Platform.OS === 'ios' ? '75%' : '30%',
         position: "absolute"
     }
 });

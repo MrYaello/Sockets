@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { SafeAreaView, View, StyleSheet, Image, KeyboardAvoidingView } from "react-native";
+import { SafeAreaView, View, StyleSheet, Image, KeyboardAvoidingView, Platform, TextInput } from "react-native";
 import { 
     ScrollView, 
     Text, 
@@ -31,6 +31,9 @@ import socket from "../assets/utils/socket.js";
 import { ChevronLeftIcon, CircleIcon, MenuIcon, CheckCircleIcon, GripVerticalIcon} from "@gluestack-ui/themed";
 import { Camera, Zap } from "lucide-react-native";
 
+let messageHeight="82%";
+let actionBoxHeight="18%";
+
 const Messaging = ({ route, navigation }) => {
     const { gr, usr, avtr, mid } = route.params;
 
@@ -43,6 +46,7 @@ const Messaging = ({ route, navigation }) => {
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const textRef = useRef(null);
     const [placeholderIsSelected, setPlaceholderIsSelected] = useState(false);
+    const [keyboardIsUp, setKeyboardIsUp] = useState(false);
 
     /*const [bubbleDimensions, setBubbleDimensions] = useState({
         width: 250,
@@ -91,7 +95,8 @@ const Messaging = ({ route, navigation }) => {
                             fontSize: 30, 
                             color: "black", 
                             paddingTop: 10, 
-                            marginLeft: -5
+                            marginLeft: -5,
+                            maxWidth: "40%"
                         }}
                     >
                         {username}
@@ -150,76 +155,107 @@ const Messaging = ({ route, navigation }) => {
                     </AlertDialog>
                 </HStack>
             </Box>
-            <Box style={styles.messageBox}>
-                {(messages.length > 0) ? (
-                    <ScrollView>
-                        {messages.map((message) => {
-                            return (
-                                <VStack space="xs" alignItems="flex-start" key={message.message_id} >
-                                    {(message.sender_id === id) ? (
-                                        
-                                    <View 
-                                        style={[
-                                            styles.rightTalkBubble, 
-                                            {width: measure(message.content), 
-                                            height: 80, marginBottom: -13 
-                                            }
-                                        ]}
-                                    >
-                                        <View style={styles.rightTalkBubbleSquare}>
-                                            <Text onLayout={() => {}} style={styles.text}>{message.content}</Text>
-                                        </View>
-                                        <View style={styles.rightTalkBubbleTriangle} />
-                                    </View>
-                                    ) : (
-                                    <View 
-                                        style={[
-                                            styles.leftTalkBubble, 
-                                            {width: measure(message.content), 
-                                            height: 80 }
-                                        ]}
-                                    >
-                                        <View style={styles.leftTalkBubbleSquare} >
-                                            <Text onLayout={() => {}} style={styles.text}>{message.text}</Text>
-                                        </View>
-                                        <View style={styles.leftTalkBubbleTriangle} />
-                                    </View>)}
-                                </VStack>
-                            );
-                        })}
+            {/*<KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{ flex: 1}}
+            >*/}
+                {/*<View style={styles.messageBox}>*/}
+                    <Box style={styles.messageBox && {height: keyboardIsUp ? "45%" : "82%"}}>
+                        {(messages.length > 0) ? (
+                            <ScrollView>
+                                {messages.map((message) => {
+                                    return (
+                                        <VStack space="xs" alignItems="flex-start" key={message.message_id} >
+                                            {(message.sender_id === id) ? (
+                                                
+                                            <View 
+                                                style={[
+                                                    styles.rightTalkBubble, 
+                                                    {width: measure(message.content), 
+                                                    height: 80, marginBottom: -13 
+                                                    }
+                                                ]}
+                                            >
+                                                <View style={styles.rightTalkBubbleSquare}>
+                                                    <Text onLayout={() => {}} style={styles.text}>{message.content}</Text>
+                                                </View>
+                                                <View style={styles.rightTalkBubbleTriangle} />
+                                            </View>
+                                            ) : (
+                                            <View 
+                                                style={[
+                                                    styles.leftTalkBubble, 
+                                                    {width: measure(message.content), 
+                                                    height: 80 }
+                                                ]}
+                                            >
+                                                <View style={styles.leftTalkBubbleSquare} >
+                                                    <Text onLayout={() => {}} style={styles.text}>{message.text}</Text>
+                                                </View>
+                                                <View style={styles.leftTalkBubbleTriangle} />
+                                            </View>)}
+                                        </VStack>
+                                    );
+                                })}
 
-                    </ScrollView>
-                ) : (
-                    <Box style = {{flex: 1, justifyContent: "center", alignItems: "center"}}>
-                        <Text style={{alignSelf: "center"}}>There are no messsages here!</Text>
+                            </ScrollView>
+                        ) : (
+                            <Box style = {{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                                <Text style={{alignSelf: "center"}}>There are no messsages here!</Text>
+                            </Box>
+                        )}
                     </Box>
-                )}
-            </Box>
-            <Box style={styles.actionBox}>
-                <HStack style={{marginTop: 10}}>
-                    <Button backgroundColor="transparent" style={{marginRight: -10}}>
-                        <ButtonIcon as={GripVerticalIcon} size="2xl" color="white" />
-                    </Button>
-                    <View style={styles.inputBox}>
-                        <Input size="md" variant="rounded" borderColor="transparent">
-                            <InputField 
-                                placeholder= {placeholderIsSelected ? "" : "Enter text here..."} 
-                                placeholderTextColor="white" 
-                                onFocus={() => setPlaceholderIsSelected(true)} 
-                                onBlur={() => setPlaceholderIsSelected(false)} 
-                                color="white"
-                            />
-                        </Input>
-                    </View>
-                    <Button backgroundColor="transparent" >
-                        <Camera color="white" size={30} strokeWidth={1.5}/>
-                    </Button>
-                    <Button backgroundColor="transparent" style={{paddingLeft: 5}}>
-                        <Zap color="white" size={30} strokeWidth={1.5} />
-                    </Button>
+                {/*</SafeAreaView></View>
+                <View style={styles.actionBox}>*/}
+                    <Box style={{height: keyboardIsUp ? "55%" : "18%", backgroundColor: "rgba(55, 40, 160, 1)"}}>
+                        <HStack style={{marginTop: 10}}>
+                            <Button backgroundColor="transparent" style={{marginRight: -10}}>
+                                <ButtonIcon as={GripVerticalIcon} size="2xl" color="white" />
+                            </Button>
+                            <View style={styles.inputBox}>
+                                <Input size="md" variant="rounded" borderColor="transparent">
+                                    <InputField 
+                                        placeholder= {placeholderIsSelected ? "" : "Enter text here..."} 
+                                        placeholderTextColor="white" 
+                                        onFocus={() => {
+                                            setPlaceholderIsSelected(true);
+                                            setKeyboardIsUp(true)
+                                        }} 
+                                        onBlur={() => {
+                                            setPlaceholderIsSelected(false);
+                                            setKeyboardIsUp(false);
+                                        }} 
+                                        color="white"
+                                    />
+                                </Input>
+                            </View>
+                            {/*<KeyboardAvoidingView
+                                style={styles.container}
+                                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                                keyboardVerticalOffset={Platform.select({ios: 0, android: 50})}
+                            >
+                                <View style={styles.innerContainer}>
+                                    <TextInput
+                                        style={styles.input}
+                                        //value={inputValue}
+                                        placeholder = {placeholderIsSelected ? '' : "Enter text here..."}
+                                        onFocus = {() => setPlaceholderIsSelected(true)}
+                                        onBlur={() => setPlaceholderIsSelected(false)}
+                                        color='white'
+                                    />
+                                </View>
+                            </KeyboardAvoidingView>*/}
+                            <Button backgroundColor="transparent" >
+                                <Camera color="white" size={30} strokeWidth={1.5}/>
+                            </Button>
+                            <Button backgroundColor="transparent" style={{paddingLeft: 5}}>
+                                <Zap color="white" size={30} strokeWidth={1.5} />
+                            </Button>
 
-                </HStack>
-            </Box>
+                        </HStack>
+                    </Box>
+                {/*</View>*/}
+            {/*</KeyboardAvoidingView>*/}
         </SafeAreaView>
     );
 };
@@ -281,21 +317,19 @@ const styles = StyleSheet.create({
     },
     headingBox: {
         marginBottom: 10,
+        marginTop: Platform.OS === 'android' && 25
     },
     messageBox: {
-        minHeight: "80%",
-        maxHeight: "80%",
-        verticalAlign: "top"
+        verticalAlign: "top",
     },
     actionBox: {
-        height: "20%",
         backgroundColor: "rgba(55, 40, 160, 1)",
     },
     inputBox: {
-        width: "55%",
+        width: "55%", 
         backgroundColor: "rgba(109, 105, 255, .9)",
         borderRadius: 20,
-    },
+    }
 });
 
 export default Messaging;
