@@ -65,11 +65,11 @@ const Chat = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Box height={Platform.OS === "android" && "7%"} mt="3%" mb="2%" style={{alignItems: "center", width: "100%"}}>
-        <HStack flexDirection="row" style={{justifyContent: "space-between", height: "100%", width: "90%", alignItems: "center"}}>
-          <ChatMenu username={username} setVisibleModalLogOut={setVisibleModalLogOut} />
-          <Heading style={Platform.OS === "ios" && {marginTop: 10, paddingBottom:30}}>
+        <HStack flexDirection="row" style={{justifyContent: "space-evenly", height: "100%", width: "100%", alignItems: "center"}}>
+          <Heading style={Platform.OS === "ios" ? {marginTop: 10, paddingBottom:30} : {marginTop: 15}}>
             {username}
           </Heading>
+          <ChatMenu username={username} setVisibleModalLogOut={setVisibleModalLogOut} />
         </HStack>
       </Box>
       <Box

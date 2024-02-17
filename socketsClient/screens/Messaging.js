@@ -130,12 +130,12 @@ const Messaging = ({ route, navigation }) => {
                                 color="$success700"
                                 $dark-color="$success300"
                             />
-                            <Heading size="lg">Sexooooooooo</Heading>
+                            <Heading size="lg">Prueba</Heading>
                             </HStack>
                         </AlertDialogHeader>
                         <AlertDialogBody>
                             <Text size="sm">
-                                Yael y Luk putoooooosss
+                                Esta es una pantalla de prueba
                             </Text>
                         </AlertDialogBody>
                         <AlertDialogFooter borderTopWidth="$0">
